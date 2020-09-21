@@ -19,7 +19,18 @@
     </script>
 
     <div id="ageDiv"></div>
+    <script>
+    var fancy_name = "<b>" + first_name+ "</b>".concat ("<br>","<em>" + middle_name + "</em>", "<br>", "<font size='+100'>" + last_name + "</font>");
+    document.write(fancy_name);
+    </script>
 
+    <script>
+        var tax = 0.0413;
+        var bill_amount = 439;
+        var meghan_bill = tax * bill_amount;
+        var adjusted_bill = meghan_bill.toFixed(2);
+        document.write(adjusted_bill);
+    </script>
 
 </body>
 </html>   
@@ -27,5 +38,5 @@
         var stupid;
         age= 18;
         numberOfKids = 1;
-        document.getElementById("ageDiv").innerHTML = "I want " + numberOfKids*age*stupid + " kids!";       
+        document.getElementById("ageDiv").innerHTML = "I want " + numberOfKids*age*stupid + " kids!"; 
     </script>
