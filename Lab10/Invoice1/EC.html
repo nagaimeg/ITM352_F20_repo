@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <table border="2">
+        <tbody>
+            <script>
+                // array of TicTacToe Values
+                TicTacToe = ["X", "O", "X", "O", "X", "O", "X", "O", "O"];
+
+                // print our rows of TicTacToe
+                for (i = 0; i < (TicTacToe.length); i = i + 3) {
+                    document.write(`
+                    <tr>
+                <th>${TicTacToe[i]}</th>
+                <th>${TicTacToe[i + 1]}</th>
+                <th>${TicTacToe[i + 2]}</th>
+                </tr>
+              `);
+                }
+            </script>
+        </tbody>
+    </table>
+</body>
+
+</html>
