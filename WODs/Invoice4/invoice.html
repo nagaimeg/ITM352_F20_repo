@@ -1,35 +1,30 @@
 <script>
   /*Meghan Nagai's Invoice 1
   This is a sales receipt for 5 different product*/
-
   function generate_item_rows(product_quantities_array) {
-    //prints out row of product items product_quantities_array
-
-    for (i=0; i<product_quantities_array.length; i++) {
-      qty = product_quantities_array[i];
-      errs = isNonNegIntString(qty, true)
-      //errs = isNonNegIntString(qty, true);
-      if (qty == 0) {
-        continue;
-      }
-      if(errs.length == 0) {
-        extended_price = qty * products[i].price;
-        subtotal = subtotal + extended_price;
-      } else {
-        extended_price=0
-        subtotal = subtotal + extended_price;
-        qty= `<span style="color:red;">${qty}<br>${errs.join("<br>")}</span>`;
-      }
-      document.write (`
-        <tr>
-          <td width="43%">${products[i].brand}</td>
-          <td align="center" width="11%">${qty}</td>
-          <td width="13%">\$${products[i].price}</td>
-          <td width="54%">\$${extended_price}</td>
-        </tr>
-        `);
+    for (i=0; i < product_quantities_array.length;i++) {
+    qty=product_quantities_array[i]
+      errs=isNonNegIntString(qty,true);
+    if (qty==0){
+      continue;
+    } 
+    if (errs.length==0) {
+    extended_price =  qty* products[i].price
+        subtotal = subtotal + extended_price
+    } else {
+      extended_price = 0
+      qty= `<span style="color:red;">${qty}<br>${errs.join("<br>")}</span>`;
     }
-
+        document.write
+          (`
+          <tr>
+            <td width="43%">${products[i].brand}</td>
+            <td align="center" width="11%">${qty}</td>
+            <td width="13%">\$${products[i].price}</td>
+            <td width="54%">\$${extended_price}</td>
+          </tr>
+          `)
+        }
   }
 
   function isNonNegIntString(string_to_check, returnErrors=false) {
@@ -44,46 +39,34 @@
 }
 
   // Product Data
-  products = [
-    //product1
-    {
-      'brand': "HTC",
-      'price': 40.00,
-      'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/HTC.jpg"
-    },
+products =[
+//Product1
+{'brand':"HTC",
+'price': 40.00,
+'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/HTC.jpg"},
 
-    //Product2
-    {
-      'brand': "Apple",
-      'price': 75.00,
-      'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/iphone-3gs.jpg"
-    },
+//Product2
+{'brand':"Apple",
+'price': 75.00,
+'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/iphone-3gs.jpg"},
 
-    //Product3
-    {
-      'brand': "Nokia",
-      'price': 35.00,
-      'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/Nokia.jpg"
-    },
+//Product3
+{'brand':"Nokia",
+'price': 35.00,
+'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/Nokia.jpg"},
 
-    //Product4
-    product4 = {
-      'brand': "Samsung",
-      'price': 45.00,
-      'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/Samsung.jpg"
-    },
+//Product4
+{'brand':"Samsung",
+'price': 45.00,
+'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/Samsung.jpg"},
 
-    //Product5
-    product5 = {
-      'brand': "Blackberry",
-      'price': 10.00,
-      'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/Blackberry.jpg"
-    }];
+//Product5
+{'brand':"Blackberry",
+'price': 10.00,
+'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/Blackberry.jpg"}
+];
 
-  var quantities = [3,1,2.2,,1,"two"];
-
-
-
+quantities=[1,-1,2.1,-3.2,"cat"]
   // Product 1
   var item1 = 'Gillette Sensor 3 Razor';
   var quantity1 = 2;
@@ -127,11 +110,10 @@
         <th style="text-align: center;" width="13%">price</th>
         <th style="text-align: center;" width="54%">extended price</th>
       </tr>
-
-
       <script>
-        generate_item_rows(quantities);
+       generate_item_rows(quantities);
       </script>
+
       <script>
         // Compute sales tax
         var tax_rate = 0.0575;
@@ -184,4 +166,5 @@
     </b>
   </div>
 </body>
+
 </html>
