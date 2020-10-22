@@ -2,7 +2,87 @@
   /*Meghan Nagai's Invoice 1
   This is a sales receipt for 5 different product*/
 
+  function generate_item_rows(product_quantities_array) {
+    //prints out row of product items product_quantities_array
+
+    for (i=0; i<product_quantities_array.length; i++) {
+      qty = product_quantities_array[i];
+      errs = isNonNegIntString(qty, true)
+      //errs = isNonNegIntString(qty, true);
+      if (qty == 0) {
+        continue;
+      }
+      if(errs.length == 0) {
+        extended_price = qty * products[i].price;
+        subtotal = subtotal + extended_price;
+      } else {
+        extended_price=0
+        subtotal = subtotal + extended_price;
+        qty= `<span style="color:red;">${qty}<br>${errs.join("<br>")}</span>`;
+      }
+      document.write (`
+        <tr>
+          <td width="43%">${products[i].brand}</td>
+          <td align="center" width="11%">${qty}</td>
+          <td width="13%">\$${products[i].price}</td>
+          <td width="54%">\$${extended_price}</td>
+        </tr>
+        `);
+    }
+
+  }
+
+  function isNonNegIntString(string_to_check, returnErrors=false) {
+    /*this function returns ture if string_to_check is a non-negative integer.If returnErrors=true it will return the array of reaons it is non-negative integer
+    */
+   errors = []; // assume no errors at first
+    if (Number(string_to_check) != string_to_check) errors.push('Not a number!'); // Check if string is a number value
+    if (string_to_check < 0) errors.push('Negative value!'); // Check if it is non-negative
+    if (parseInt(string_to_check) != string_to_check) errors.push('Not an integer!'); // Check that it is an integer
+    
+    return returnErrors ? errors : (errors.length == 0);
+}
+
   // Product Data
+  products = [
+    //product1
+    {
+      'brand': "HTC",
+      'price': 40.00,
+      'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/HTC.jpg"
+    },
+
+    //Product2
+    {
+      'brand': "Apple",
+      'price': 75.00,
+      'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/iphone-3gs.jpg"
+    },
+
+    //Product3
+    {
+      'brand': "Nokia",
+      'price': 35.00,
+      'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/Nokia.jpg"
+    },
+
+    //Product4
+    product4 = {
+      'brand': "Samsung",
+      'price': 45.00,
+      'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/Samsung.jpg"
+    },
+
+    //Product5
+    product5 = {
+      'brand': "Blackberry",
+      'price': 10.00,
+      'image': "http://dport96.github.io/ITM352/morea/080.flow-control-II/Blackberry.jpg"
+    }];
+
+  var quantities = [3,1,2.2,,1,"two"];
+
+
 
   // Product 1
   var item1 = 'Gillette Sensor 3 Razor';
@@ -47,72 +127,11 @@
         <th style="text-align: center;" width="13%">price</th>
         <th style="text-align: center;" width="54%">extended price</th>
       </tr>
-      <script>
-        extended_price = quantity1 * price1
-        subtotal = subtotal + extended_price
-        document.write
-          (`
-          <tr>
-            <td width="43%">${item1}</td>
-            <td align="center" width="11%">${quantity1}</td>
-            <td width="13%">\$${price1}</td>
-            <td width="54%">\$${extended_price}</td>
-          </tr>
-          `)
-      </script>
-      <script>
-        extended_price = quantity2 * price2
-        subtotal = subtotal + extended_price
-        document.write
-          (`
-        <tr>
-          <td width="43%">${item2}</td>
-          <td align="center" width="11%">${quantity2}</td>
-          <td width="13%">\$${price2}</td>
-          <td width="54%">\$${extended_price}</td>
-        </tr>
-        `)
-      </script>
-      <script>
-        extended_price = quantity3 * price3
-        subtotal = subtotal + extended_price
-        document.write
-          (`
-        <tr>
-          <td width="43%">${item3}</td>
-          <td align="center" width="11%">${quantity3}</td>
-          <td width="13%">\$${price3}</td>
-          <td width="54%">\$${extended_price}</td>
-        </tr>
-        `)
-      </script>
-      <script>
-        extended_price = quantity4 * price4
-        subtotal = subtotal + extended_price
-        document.write
-          (`
-        <tr>
-          <td width="43%">${item4}</td>
-          <td align="center" width="11%">${quantity4}</td>
-          <td width="13%">\$${price4}</td>
-          <td width="54%">\$${extended_price}</td>
-        </tr>
-        `)
-      </script>
-      <script>
-        extended_price = quantity5 * price5
-        subtotal = subtotal + extended_price
-        document.write
-          (`
-        <tr>
-          <td width="43%">${item5}</td>
-          <td align="center" width="11%">${quantity5}</td>
-          <td width="13%">\$${price5}</td>
-          <td width="54%">\$${extended_price}</td>
-        </tr>
-        `)
-      </script>
 
+
+      <script>
+        generate_item_rows(quantities);
+      </script>
       <script>
         // Compute sales tax
         var tax_rate = 0.0575;
@@ -165,5 +184,4 @@
     </b>
   </div>
 </body>
-
 </html>
