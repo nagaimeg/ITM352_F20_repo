@@ -48,8 +48,8 @@
         <th style="text-align: center;" width="54%">extended price</th>
       </tr>
       <script>
-        extended_price = quantity1 * price1
-        subtotal = subtotal + extended_price  
+        extended_price=quantity1*price1
+        subtotal=subtotal+extended_price
         document.write
           (`
           <tr>
@@ -61,8 +61,8 @@
           `)
       </script>
       <script>
-        extended_price = quantity2 * price2
-        subtotal = subtotal + extended_price
+                extended_price=quantity2*price2
+        subtotal=subtotal+extended_price
         document.write
           (`
         <tr>
@@ -74,8 +74,8 @@
         `)
       </script>
       <script>
-        extended_price = quantity3 * price3
-        subtotal = subtotal + extended_price
+                extended_price=quantity3*price3
+        subtotal=subtotal+extended_price
         document.write
           (`
         <tr>
@@ -87,8 +87,8 @@
         `)
       </script>
       <script>
-        extended_price = quantity4 * price4
-        subtotal = subtotal + extended_price
+                extended_price=quantity4*price4
+        subtotal=subtotal+extended_price
         document.write
           (`
         <tr>
@@ -100,8 +100,8 @@
         `)
       </script>
       <script>
-        extended_price = quantity5 * price5
-        subtotal = subtotal + extended_price
+                extended_price=quantity5*price5
+        subtotal=subtotal+extended_price
         document.write
           (`
         <tr>
@@ -117,9 +117,16 @@
         // Compute sales tax
         var tax_rate = 0.0575;
         var sales_tax = subtotal * tax_rate;
-
+        // Compute Shipping Costs
+        if (0 <= subtotal && subtotal < 50) {
+          shipping_cost = 2;
+        } else if (50 <= subtotal && subtotal < 100) {
+          shipping_cost = 5;
+        } else if (100 <= subtotal) {
+          shipping_cost = subtotal * 0.05;
+        }
         // Compute grand total
-        var total = subtotal + sales_tax;
+        var total = subtotal + sales_tax + shipping_cost;
       </script>
       <tr>
         <td colspan="4" width="100%">&nbsp;</td>
@@ -135,6 +142,12 @@
         </td>
         <td width="54%">$
           <script>document.write(sales_tax.toFixed(2))</script>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;" colspan="3" width="67%"><span style="font-family: arial;">Shipping</span></td>
+        <td width="54%">$
+          <script>document.write(shipping_cost.toFixed(2))</script>
         </td>
       </tr>
       <tr>
