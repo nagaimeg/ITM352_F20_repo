@@ -28,18 +28,19 @@
             qty_textbox_message.innerHTML = isNonNegIntString(quantity_form["quantity_textbox"].value, true).join(", ");
         }
 
-        function displayPurchase() {
-            purchase_qty = GET["quantity_textbox"];
-            if (isNonNegIntString(purchase_qty)) {
-                document.write = `Thank for you for ordering ${purchase_qty} things!!`;
-            } else {
-                checkQuantityTextbox();
-            }
-        }
+
 
 
         if (typeof GET["submit_button"] != 'undefined') {
-            displayPurchase();
+            function displayPurchase() {
+                purchase_qty = GET["quantity_textbox"];
+                if (isNonNegIntString(purchase_qty)) {
+                    document.write = `Thank for you for ordering ${purchase_qty} things!!`;
+                } else {
+                    checkQuantityTextbox();
+
+                }
+            }
         }
 
     </script>
@@ -48,7 +49,7 @@
 
 <body id="the body">
     <form name="quantity_form" action="" method="POST">
-        <label for="quantity_textbox">quantity desired:</label>        
+        <label for="quantity_textbox">quantity desired:</label>
         <input type="text" name="quantity_textbox" onkeyup="checkQuantityTextbox();">
         <script>
             if (typeof GET['submit_button'] != 'undefined') {
