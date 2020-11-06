@@ -13,7 +13,7 @@ app.all('*', function (request, response, next) {
 app.use(myParser.urlencoded({ extended: true }));
 app.post("/process_form", function (request, response) {
    let POST = request.body;
-   process_quantity_form(POST,reponse)
+   process_quantity_form(request.body, response);
 
 });
 

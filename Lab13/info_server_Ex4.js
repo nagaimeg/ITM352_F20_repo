@@ -35,7 +35,6 @@ function process_quantity_form (POST, response) {
    }
 }
 
-
 function displayPurchase(POST, response) {
    q = POST['quantity_textbox'];
    if (typeof POST['quantity_textbox'] != 'undefined') {

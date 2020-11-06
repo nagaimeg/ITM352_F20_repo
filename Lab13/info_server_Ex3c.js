@@ -2,31 +2,30 @@
 var express = require('express');
 var app = express();
 var myParser = require("body-parser");
+var data = require('./public/product_data.js');
+var products = data.products;
 var fs = require('fs');
+
+app.use(myParser.urlencoded({ extended: true }));
 
 app.all('*', function (request, response, next) {
    console.log(request.method + ' to ' + request.path);
    next();
 });
 
-app.use(myParser.urlencoded({ extended: true }));
+
 app.post("/process_form", function (request, response) {
-   //let POST = request.body;
+   let POST = request.body;
    process_quantity_form(request.body, response);
 });
 
 function process_quantity_form(POST, response) {
-   if (typeof POST['quantity_textbox'] != 'undefined') {
-      displayPurchase(POST, response);
+   let model = products[0]['model'];
+let model_price = products[0]['price'];
 
-   }
-}
-
-function displayPurchase(POST, response) {
-   q = POST['quantity_textbox'];
    if (typeof POST['quantity_textbox'] != 'undefined') {
-      let q = POST['quantity_textbox'];
-      if (isNonNegInt(q)) {
+      q = POST['quantity_textbox'];
+      if (isNonNegInt(q,false)) {
          var contents = fs.readFileSync('./views/display_quantity_template.view', 'utf8');
          response.send(eval('' + contents + '')); // render template string
       } else {
