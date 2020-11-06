@@ -1,0 +1,21 @@
+/*General*/
+/*coloring the body*/
+tbody {
+    width: 800px; 
+    margin: 0 auto;
+    background: lavenderblush;
+}
+/*creating border colors*/
+th, td {
+    border: 5px solid pink
+}
+
+/* Form styling */ 
+body {
+    /*Styling the Invoice Table*/
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    font-size: 16px;
+    font-weight: 700;
+}
+

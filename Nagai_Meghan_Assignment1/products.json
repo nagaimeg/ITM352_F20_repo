@@ -1,4 +1,4 @@
-[
+{"products": [
         {
             "product_name": "Curved Bar Necklace",
             "brand": "Jared",
@@ -31,3 +31,4 @@
             "image": "https://media.tiffany.com/is/image/Tiffany/EcomItemL2/tiffany-paper-flowersdiamond-and-tanzanite-flower-pendant-61625690_984447_ED.jpg"
         }
     ]
+}
