@@ -17,25 +17,45 @@ app.all('*', function (request, response, next) {
 app.use(myParser.urlencoded({ extended: true }));
 //telling to run the display_invoice function when data is posted assuming not undefined (copied from Lab 13)
 app.post("/process_form", function (request, response) {
-    //POST = request.body;
+    //check if data is valid display invoice or don't respond
+    //assme no error
+    haserrors = false;
+    //assume no quantities
+    hasquantities= false;
+    //check if no errors if error true, check if has quantities if there are, then true
+    for (i in products) {
+        qty = request.body[`quantity${i}`];
+        if(qty>0) {
+            hasquantities=true;
+        }
+        if (isNonNegInt(qty) == false) {
+            haserrors = true;
+        }
+    }
+    //if there are quantities and there are no error display the invoice if not then alert
+    if (haserrors == false && hasquantities ==true) {
         display_invoice(request.body, response);
-    }); 
+    } else{
+        response_string="<script> alert('Error! please go back and put valid qunatities');window.history.go(-1);</script>";
+        response.send(response_string);
+    }
+});
 
 
-    //computes the values needed to display the invoice
-    function display_invoice(POST,response) {
-        if(typeof POST['submit_button'] != 'undefined') {
-            var contents = fs.readFileSync('./views/invoice.template', 'utf8');//uses the invoice template which was adapted from invoice4
-        invoice = '';
+//computes the values needed to display the invoice
+function display_invoice(POST, response) {
+    if (typeof POST['submit_button'] != 'undefined') {
+
+        invoice_rows = '';
         subtotal = 0;
         for (i in products) {
-        qty = POST[`quantity${i}`];
-             //sets the quantity amount for each product
+            qty = POST[`quantity${i}`];
+            //sets the quantity amount for each product
             if (qty > 0) {
                 // displays the product rows of items ordered. Copied from WOD Invoice4 invoice.html
-                extended_price =qty * products[i].price
-                subtotal= subtotal + extended_price;
-                invoice += (`
+                extended_price = qty * products[i].price
+                subtotal = subtotal + extended_price;
+                invoice_rows += (`
                 <tr>
                 <td style="text-align: left;">${products[i].brand} ${products[i].product_name}</td>
                 <td align="center">${qty}</td>
@@ -67,20 +87,17 @@ app.post("/process_form", function (request, response) {
         //From WOD Invoice4  Invoice.html
         total = subtotal + sales_tax + shipping_cost;
 
-        if (isNonNegInt(qty)) {
-            invoice += eval('`' + contents + '`')
-            } else {
-                invoice= '';
-                invoice += `<h3>You have entered an invalid quantity ${qty}! Please go back and check your orders</h3>`
-            }
-        
+        //Load template and send invoice
+        var contents = fs.readFileSync('./views/invoice.template', 'utf8');//uses the invoice template which was adapted from invoice4
+        response.send(eval('`' + contents + '`'));
+
+
     }
-    response.send(invoice);
-    response.end();
-    }
+}
 //copied from Lab13 Ex4
 function isNonNegInt(q, returnErrors = false) {
     errors = []; // assume no errors at first
+    if(q=='') {q=0;}//Check if there is a blank. If there is, it is a zero
     if (Number(q) != q) errors.push('Not a number!'); // Check if string is a number value
     if (q < 0) errors.push('Negative value!'); // Check if it is non-negative
     if (parseInt(q) != q) errors.push(' Not an integer!'); // Check that it is an integer
