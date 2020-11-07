@@ -39,7 +39,7 @@ app.post("/process_form", function (request, response) {
                 <tr>
                 <td style="text-align: left;">${products[i].brand} ${products[i].product_name}</td>
                 <td align="center">${qty}</td>
-                <td style="text-align: center"\$${products[i].price}</td>
+                <td style="text-align: center">\$${products[i].price}</td>
                 <td style="text-align: right;">\$${extended_price.toFixed(2)}</td>
               </tr>
       `);
@@ -68,12 +68,15 @@ app.post("/process_form", function (request, response) {
         total = subtotal + sales_tax + shipping_cost;
 
         if (isNonNegInt(qty)) {
-            response.send(eval('`' + contents + '`'));
+            invoice += eval('`' + contents + '`')
             } else {
-                response.send(`<h3>You have entered an invalid quantity ${qty}! Please go back and check your orders</font></h3>`);
+                invoice= '';
+                invoice += `<h3>You have entered an invalid quantity ${qty}! Please go back and check your orders</h3>`
             }
         
     }
+    response.send(invoice);
+    response.end();
     }
 //copied from Lab13 Ex4
 function isNonNegInt(q, returnErrors = false) {
