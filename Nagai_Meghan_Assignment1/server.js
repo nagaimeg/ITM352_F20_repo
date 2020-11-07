@@ -1,4 +1,4 @@
-//copied from Lab13 and heavily adapted. Looked at the Assignemnt1 Example
+//copied from Lab13 Ex4  and heavily adapted to display the invoice. Looked at the Assignemnt 1 Example for inspiration
 var data = require('./products.json');//loads the product.json
 var products = data.products;//sets the products_array variables
 var express = require('express');//enabling the usage of the express module
@@ -38,10 +38,10 @@ app.post("/process_form", function (request, response, next) {
                 subtotal += extended_price;
                 str += (`
                 <tr>
-                <td width="43%">${products[i].brand} ${products[i].product_name}</td>
-                <td align="center" width="11%">${qty}</td>
-                <td width="13%">\$${products[i].price}</td>
-                <td width="54%">\$${extended_price}</td>
+                <td align="center">${products[i].brand} ${products[i].product_name}</td>
+                <td align="center">${qty}</td>
+                <td align="center">\$${products[i].price}</td>
+                <td align="center">\$${extended_price}</td>
               </tr>
       `);
             }
