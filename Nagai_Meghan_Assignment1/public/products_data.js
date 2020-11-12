@@ -1,3 +1,4 @@
+//Followed Assignmnet 1 instructions and looked at Smart Phone Products
 products = [
     //Product 1
     {

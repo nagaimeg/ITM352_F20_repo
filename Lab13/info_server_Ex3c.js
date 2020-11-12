@@ -5,6 +5,9 @@ var myParser = require("body-parser");
 var data = require('./public/product_data.js');
 var products = data.products;
 var fs = require('fs');
+var data = require('./public/product_data.js');
+var products = data.products;
+
 
 app.use(myParser.urlencoded({ extended: true }));
 

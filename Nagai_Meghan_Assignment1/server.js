@@ -1,4 +1,4 @@
-//copied from Lab13 Ex4  and heavily adapted to display the invoice.
+//copied from Lab13 Ex4  and heavily adapted to display the invoice. Referenced Assignment 1 Example for inspiration, help from Professor Port
 var data = require('./products.json');//loads the product.json
 var products_array = data.products_array;//sets the products_array variables
 var express = require('express');//enabling the usage of the express module
