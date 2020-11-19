@@ -1,5 +1,5 @@
 //Followed Assignmnet 1 instructions and looked at Smart Phone Products
-products = [
+products_array = [
     //Product 1
     {
         "product_name": "Curved Bar Necklace",
@@ -38,3 +38,8 @@ products = [
         "image": "https://media.tiffany.com/is/image/Tiffany/EcomItemL2/tiffany-paper-flowersdiamond-and-tanzanite-flower-pendant-61625690_984447_ED.jpg"
     }
 ];
+
+//if inputs are not undefined export products array data
+if (typeof module != 'undefined') {
+    module.exports.products_array = products_array;
+}
