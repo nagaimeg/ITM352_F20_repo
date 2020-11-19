@@ -1,0 +1,36 @@
+/*General*/
+body {
+    position: relative;
+    width: 21cm;  
+    height: 29.7cm; 
+    margin: 0 auto; 
+    color: #001028;
+    background: #FFFFFF; 
+    font-family: Arial, sans-serif; 
+    font-size: 12px; 
+    font-family: Arial;
+    background: url(./images/starry.jpg)
+  }
+/* Typography */  
+h1 {
+    color: black;
+    font-size: 2.4em;
+    line-height: 1.4em;
+    font-weight: normal;
+    text-align: center;
+    margin: 0 0 20px 0;
+    background-color: lightpink;
+  }
+/* block styling */ 
+main {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
+div {
+    background: lightpink;
+    max-width:1200px;
+}
+form {
+    margin-top:50px;
+}
