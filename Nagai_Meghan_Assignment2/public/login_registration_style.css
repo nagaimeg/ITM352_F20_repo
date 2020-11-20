@@ -1,4 +1,5 @@
-/*General*/
+/*Adapted from: https://www.w3resource.com/javascript/form/javascript-sample-registration-form-validation.php*/
+/*Format body to display the starry.jpg*/
 body {
     position: relative;
     width: 21cm;  
@@ -10,7 +11,7 @@ body {
     font-family: Arial;
     background: url(./images/starry.jpg)
   }
-/* Typography */  
+/* Formatt the heading*/  
 h1 {
     color: black;
     font-size: 2.4em;
@@ -47,6 +48,7 @@ form li {
   height: 150px;
   }
   
+  /*format the register/submit button*/
   [type="submit"] {
   clear: left;
   margin: 20px 0 0 230px;
@@ -58,18 +60,19 @@ form li {
   font-weight: bold;
   }
 
+  /*format the div to be consistent with the products display*/
   div {
     background: lightpink;
     max-width:1200px;
     height: 275px;
   }
-
+/*format the "if you have an account"*/
 div.login_redirect {
 height:50px;
 background:white;
 font-size:24px;
   }
-
+/*format the "if you don't have an account"*/
   div.registration_redirect {
     height:50px;
     background:white;

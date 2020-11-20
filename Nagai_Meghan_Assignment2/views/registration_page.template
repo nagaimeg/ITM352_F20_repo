@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--Adapted from Lab 14 Ex4.js-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,6 +15,8 @@
 <h2>Please fill in this form to create an account.</h2>
 <form action="process_register" method="POST">
 <ul>
+<li><label for="fullname"><b>Full Name</b></label></li><br>
+<li><input type="text" name="fullname" size="40" placeholder="enter your full name" ></li><br>
 <li><label for="username"><b>Username</b></label></li><br>
 <li><input type="text" name="username" size="40" placeholder="enter username" ></li><br>
 <li><label for="password"><b>Password</b></label></li><br>
@@ -29,7 +32,7 @@ name="submit_button">
 </form>
 </div>
 <div class="registration_redirect">
-<p>Already have an account? <a href="#">Sign in</a>.</p>
+<p>Already have an account? <a href="/login">Sign in</a>.</p>
 </div>
 
 </body>

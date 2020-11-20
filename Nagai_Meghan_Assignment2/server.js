@@ -5,10 +5,8 @@ var express = require('express');//enabling the usage of the express module
 var app = express();//setting the express module as app
 var myParser = require("body-parser");//loading and enabling the body parser module
 var fs = require('fs');// references fs module to read the file path to invoice template
-//const { response } = require('express');
-const querystring = require('querystring');
-
-const user_registration_info = 'user_registration_info.json';
+var quantity_data;//create a universal variable (from Assignment2 Workshop! thank you to jojo for asking the question)
+const user_registration_info = 'user_registration_info.json';//store user_registration_info.json as a variable
 
 //writes the request message
 app.all('*', function (request, response, next) {
@@ -19,9 +17,10 @@ app.all('*', function (request, response, next) {
 app.use(myParser.urlencoded({ extended: true }));
 //telling to run the display_invoice function when data is posted assuming not undefined (copied from Lab 13)
 
-
+//processing the products the user wants to purchase
 app.post("/process_form", function (request, response) {
     //check if data is valid display invoice or don't respond
+    let POST = request.body;
     //assme no error
     haserrors = false;
     //assume no quantities
@@ -36,12 +35,16 @@ app.post("/process_form", function (request, response) {
             haserrors = true;
         }
     }
-    requested_products = querystring.stringify(request.body);
+
     //if there are quantities and there are no error display the invoice if not then alert
-    if (haserrors == false && hasquantities == true) {
-        //display_invoice(request.body, response);
-        response.redirect("./login_page.html?"+ requested_products)
-    } else {
+    if (haserrors == false && hasquantities == true) {//if there are no errors
+        //set the quantity data variable to POST
+        quantity_data = POST;
+        //load login page
+        var contents = fs.readFileSync('./views/login_page.template', 'utf8');//uses the login page
+        response.send(eval('`' + contents + '`'));
+
+    } else {//if there are errors then show error
         response_string = "<script> alert('Error! One or more of your values are invalid! Please go back and put valid qunatities');window.history.go(-1);</script>";
         response.send(response_string);
     }
@@ -55,7 +58,7 @@ function display_invoice(POST, response) {
         invoice_rows = '';
         subtotal = 0;
         for (i in products_array) {
-            qty = POST[`quantity${i}`];
+            qty = quantity_data[`quantity${i}`];
             //sets the quantity amount for each product
             if (qty > 0) {
                 // displays the product rows of items ordered. Copied from WOD Invoice4 invoice.html
@@ -93,10 +96,8 @@ function display_invoice(POST, response) {
         //From WOD Invoice4  Invoice.html
         total = subtotal + sales_tax + shipping_cost;
 
-        //Load template and send invoice
-        var contents = fs.readFileSync('./views/invoice.template', 'utf8');//uses the invoice template which was adapted from invoice4
-        response.send(eval('`' + contents + '`'));
-
+        var invoice = fs.readFileSync('./views/invoice.template', 'utf8');//uses the invoice template which was adapted from invoice4
+        response.send(eval('`' + invoice + '`'));
 
     }
 }
@@ -130,31 +131,18 @@ if (fs.existsSync(user_registration_info)) {
 
 app.use(myParser.urlencoded({ extended: true }));
 
-app.post("/process_register", function (request, response) {
-    // process a simple register form
-    //validate the reg info
-
-    //if all data is valid write to the users_data_filename and send to invoice
-    //add an example of new user info
-    username = request.body.username;
-    users_reg_data[username] = {};
-    users_reg_data[username].password = request.body.password;
-    users_reg_data[username].email = request.body.email;
-
-    //write updated object to user_registration_info
-    reg_info_str = JSON.stringify(users_reg_data);
-    fs.writeFileSync(user_registration_info, reg_info_str);
-});
-
 app.post("/process_login", function (request, response) {
     // Process login form POST and redirect to logged in page if ok, back to login page if not
-    console.log(request.body);
+    console.log(quantity_data);
+    var POST = request.body;
 
     //if username exists, get password
     if (typeof users_reg_data[request.body.username] != 'undefined') {//if user inputted data
         if (request.body.password == users_reg_data[request.body.username].password) {//if password and username is correct
             //response.send(`Thank you ${request.body.username} for logging in!`);
-            display_invoice(request.body, response);
+            //Load template and send invoice
+            quantity_data = POST;
+            display_invoice(POST, response);
         } else {
             //response.send(`Hey! ${request.body.password} does not match the password we have for you!`)       
             incorrect_password = "<script> alert('password input does not match the password we have for you! Please try again!');window.history.go(-1);</script>";
@@ -162,9 +150,89 @@ app.post("/process_login", function (request, response) {
 
 
         }
-    } else { response.send(`Hey! ${request.body.username} does not exist!`) }
+    } else {
+        incorrect_username = "<script> alert('Username does not exist! Please check your username');window.history.go(-1);</script>";
+        response.send(incorrect_username)
+    }
 
 });
+// Display login page from the registration
+app.get("/login", function (request, response) {
+    var contents = fs.readFileSync('./views/login_page.template', 'utf8');
+    response.send(eval('`' + contents + '`'));
+});
+
+// Display registration page from the login
+app.get("/register", function (request, response) {
+    var contents = fs.readFileSync('./views/registration_page.template', 'utf8');
+    response.send(eval('`' + contents + '`'));
+});
+
+app.post("/process_register", function (request, response) {
+    // process a simple register form
+    var registration_errs = [];
+    //validate the reg info
+
+    //Validating Full Name
+    if (request.body.name == "") { //check if Full Name is empty
+        registration_errs.push('Please enter your full name');//show error
+    }
+    //make sure that full name has no more than 30 characters
+    if ((request.body.fullname.length > 30)) { //set maximum characters to be 30
+        errors.push('max fullname characters is 30');
+    }
+    //check is all letters: https://stackoverflow.com/questions/11431154/regular-expression-for-username-start-with-letter-and-end-with-letter-or-number
+    if (/^[A-Za-z]+$/.test(request.body.fullname) == false) { //if there are only letters and numbers, do nothing
+        registration_errs.push('Full name can only be letters');
+    }
+    //Validating User Name
+    var reg_username = request.body.username.toLowerCase();//make registered username lowercase
+    if (typeof users_reg_data[request.body.username] != 'undefined') {
+        registration_errs.push('This username is not available. Choose another');
+    }
+    // check for numbers& letters from: https://stackoverflow.com/questions/11431154/regular-expression-for-username-start-with-letter-and-end-with-letter-or-number
+    if ((/^[0-9a-zA-Z]+$/).test(request.body.username) == false) {
+        registration_errs.push('Username must be numbers or letters. Please go back and change your username');
+    }
+    if (request.body.username.length < 4 || request.body.username.length > 10) {
+        registration_errs.push('Username can must be between 4 or 10 characters long. Please go back and change your username');
+    }
+
+    //Validating Password
+    if ((request.body.password.length < 6)) { //if password length is less than 6 characters
+        registration_errs.push('Password must be more than 6 characters long'); //push to registration errors
+    }
+    //check if password entered equals to the repeat password entered
+    if (request.body.password !== request.body.repeat_password) { // if password equals confirm password
+        registration_errs.push('Password does not match! Please re-enter correct password'); //push error to array
+    }
+
+    //Validating email
+    var registration_email = request.body.email.toLowerCase(); //make email case insensitive
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(registration_email) == false) {
+        //if email doesn't follow above criteria
+        registration_errs.push('Email is invalid'); //push to errors array
+    }
+
+    if (registration_errs.length == 0) {
+        //if all data is valid write to the users_data_filename and send to invoice
+        //add an example of new user info
+        username = request.body.username;
+        users_reg_data[username] = {};
+        users_reg_data[username].fullname = request.body.fullname;
+        users_reg_data[username].password = request.body.password;
+        users_reg_data[username].email = request.body.email;
+        console.log(`saved`)
+
+    } else {
+        console.log(registration_errs);
+        reg_error = "<script> alert(`ERROR! Can not register. Please chack your registration form`);window.history.go(-1);</script>";
+        response.send(reg_error);
+    }
+
+})
+
+
 
 
 app.use(express.static('./public')); //references the public folder where the products is displayed
