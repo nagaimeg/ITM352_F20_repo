@@ -187,14 +187,14 @@ app.post("/process_register", function (request, response) {
     }
     //Validating User Name
     var reg_username = request.body.username.toLowerCase();//make registered username lowercase
-    if (typeof users_reg_data[request.body.username] != 'undefined') {
+    if (typeof users_reg_data[reg_username] != 'undefined') {
         registration_errs.push('This username is not available. Choose another');
     }
     // check for numbers& letters from: https://stackoverflow.com/questions/11431154/regular-expression-for-username-start-with-letter-and-end-with-letter-or-number
-    if ((/^[0-9a-zA-Z]+$/).test(request.body.username) == false) {
+    if ((/^[0-9a-zA-Z]+$/).test(reg_username) == false) {
         registration_errs.push('Username must be numbers or letters. Please go back and change your username');
     }
-    if (request.body.username.length < 4 || request.body.username.length > 10) {
+    if (reg_username.length < 4 || reg_username.length > 10) {
         registration_errs.push('Username can must be between 4 or 10 characters long. Please go back and change your username');
     }
 
@@ -217,11 +217,11 @@ app.post("/process_register", function (request, response) {
     if (registration_errs.length == 0) {
         //if all data is valid write to the users_data_filename and send to invoice
         //add an example of new user info
-        username = request.body.username;
-        users_reg_data[username] = {};
-        users_reg_data[username].fullname = request.body.fullname;
-        users_reg_data[username].password = request.body.password;
-        users_reg_data[username].email = request.body.email;
+        //username = request.body.username.toLowerCase();
+        users_reg_data[reg_username] = {};
+        users_reg_data[reg_username].fullname = request.body.fullname;
+        users_reg_data[reg_username].password = request.body.password;
+        users_reg_data[reg_username].email = request.body.email.toLowerCase();
         console.log(`saved`)
 
     } else {
