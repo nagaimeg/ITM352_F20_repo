@@ -1,9 +1,11 @@
 <!DOCTYPE html>
+<!--Author Meghan Nagai-->
 <!--Adapted from Lab 14 Ex4.js-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--link to the login_registration_style.css for formatting-->
     <link rel="stylesheet" href="./login_registration_style.css">
     <title>Registration Page</title>
 
@@ -13,6 +15,7 @@
 
 <div>
 <h2>Please fill in this form to create an account.</h2>
+<!--User registration form: Copied from Lab 14 Ex 4-->
 <form action="process_register" method="POST">
 <ul>
 <li><label for="fullname"><b>Full Name</b></label></li><br>
@@ -31,6 +34,7 @@ name="submit_button">
 </ul>
 </form>
 </div>
+<!--Link to Login Page-->
 <div class="registration_redirect">
 <p>Already have an account? <a href="/login">Sign in</a>.</p>
 </div>

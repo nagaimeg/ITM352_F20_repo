@@ -174,29 +174,38 @@ app.post("/process_register", function (request, response) {
     //validate the reg info
 
     //Validating Full Name
-    if (request.body.name == "") { //check if Full Name is empty
-        registration_errs.push('Please enter your full name');//show error
+    function validate_fullname(name_input) {
+        if (name_input == "") { //check if Full Name is empty
+            registration_errs.push('Please enter your full name');//show error
+        }
+        //make sure that full name has no more than 30 characters
+        if ((name_input.length > 30)) { //set maximum characters to be 30
+            errors.push('max fullname characters is 30');
+        }
+        //check is all letters: https://stackoverflow.com/questions/11431154/regular-expression-for-username-start-with-letter-and-end-with-letter-or-number
+        if (/^[A-Za-z]+$/.test(name_input) == false) { //if there are only letters and numbers, do nothing
+            registration_errs.push('Full name can only be letters');
+        }
     }
-    //make sure that full name has no more than 30 characters
-    if ((request.body.fullname.length > 30)) { //set maximum characters to be 30
-        errors.push('max fullname characters is 30');
-    }
-    //check is all letters: https://stackoverflow.com/questions/11431154/regular-expression-for-username-start-with-letter-and-end-with-letter-or-number
-    if (/^[A-Za-z]+$/.test(request.body.fullname) == false) { //if there are only letters and numbers, do nothing
-        registration_errs.push('Full name can only be letters');
-    }
+    //Checking if a valid username was inputted
+    validate_fullname(request.body.fullname);
+
     //Validating User Name
+    function validate_username(username_input) {
+
+        if (typeof users_reg_data[username_input] != 'undefined') {
+            registration_errs.push('This username is not available. Choose another');
+        }
+        // check for numbers& letters from: https://stackoverflow.com/questions/11431154/regular-expression-for-username-start-with-letter-and-end-with-letter-or-number
+        if ((/^[0-9a-zA-Z]+$/).test(username_input) == false) {
+            registration_errs.push('Username must be numbers or letters. Please go back and change your username');
+        }
+        if (username_input.length < 4 || username_input.length > 10) {
+            registration_errs.push('Username can must be between 4 or 10 characters long. Please go back and change your username');
+        }
+    }
     var reg_username = request.body.username.toLowerCase();//make registered username lowercase
-    if (typeof users_reg_data[reg_username] != 'undefined') {
-        registration_errs.push('This username is not available. Choose another');
-    }
-    // check for numbers& letters from: https://stackoverflow.com/questions/11431154/regular-expression-for-username-start-with-letter-and-end-with-letter-or-number
-    if ((/^[0-9a-zA-Z]+$/).test(reg_username) == false) {
-        registration_errs.push('Username must be numbers or letters. Please go back and change your username');
-    }
-    if (reg_username.length < 4 || reg_username.length > 10) {
-        registration_errs.push('Username can must be between 4 or 10 characters long. Please go back and change your username');
-    }
+    validate_username(reg_username);
 
     //Validating Password
     if ((request.body.password.length < 6)) { //if password length is less than 6 characters
@@ -207,7 +216,7 @@ app.post("/process_register", function (request, response) {
         registration_errs.push('Password does not match! Please re-enter correct password'); //push error to array
     }
 
-    //Validating email
+    //Validating email modified from https://www.tutorialspoint.com/validate-email-address-in-java
     var registration_email = request.body.email.toLowerCase(); //make email case insensitive
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(registration_email) == false) {
         //if email doesn't follow above criteria

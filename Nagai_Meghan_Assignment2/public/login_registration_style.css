@@ -22,6 +22,7 @@ h1 {
     background-color: palevioletred;
   }
 
+/*Formats the forms*/
 form li {
   list-style: none;
   margin-bottom: 5px;
