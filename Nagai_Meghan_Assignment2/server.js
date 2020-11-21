@@ -170,60 +170,75 @@ app.get("/register", function (request, response) {
 
 app.post("/process_register", function (request, response) {
     // process a simple register form
-    var registration_errs = [];
+    var fullname_registration_errs = [];
+    var username_registration_errs = [];
+    var password_registration_errs = [];
+    var email_registration_errs = [];
     //validate the reg info
 
     //Validating Full Name
     function validate_fullname(name_input) {
         if (name_input == "") { //check if Full Name is empty
-            registration_errs.push('Please enter your full name');//show error
+            fullname_registration_errs.push('Please enter your full name');//show error
         }
         //make sure that full name has no more than 30 characters
         if ((name_input.length > 30)) { //set maximum characters to be 30
-            errors.push('max fullname characters is 30');
+            fullname_registration_errs.push('max fullname characters is 30');
         }
         //check is all letters: https://stackoverflow.com/questions/11431154/regular-expression-for-username-start-with-letter-and-end-with-letter-or-number
         if (/^[A-Za-z]+$/.test(name_input) == false) { //if there are only letters and numbers, do nothing
-            registration_errs.push('Full name can only be letters');
+            fullname_registration_errs.push('Full name can only be letters');
         }
     }
-    //Checking if a valid username was inputted
+    //Checking if a valid name was inputted
     validate_fullname(request.body.fullname);
 
     //Validating User Name
     function validate_username(username_input) {
 
         if (typeof users_reg_data[username_input] != 'undefined') {
-            registration_errs.push('This username is not available. Choose another');
+            username_registration_errs.push('This username is not available. Choose another');
         }
         // check for numbers& letters from: https://stackoverflow.com/questions/11431154/regular-expression-for-username-start-with-letter-and-end-with-letter-or-number
         if ((/^[0-9a-zA-Z]+$/).test(username_input) == false) {
-            registration_errs.push('Username must be numbers or letters. Please go back and change your username');
+            username_registration_errs.push('Username must be numbers or letters. Please go back and change your username');
         }
         if (username_input.length < 4 || username_input.length > 10) {
-            registration_errs.push('Username can must be between 4 or 10 characters long. Please go back and change your username');
+            username_registration_errs.push('Username must be between 4 or 10 characters long. Please go back and change your username');
         }
     }
+    //Checking if a valid username was inputted
     var reg_username = request.body.username.toLowerCase();//make registered username lowercase
     validate_username(reg_username);
 
+
+
     //Validating Password
-    if ((request.body.password.length < 6)) { //if password length is less than 6 characters
-        registration_errs.push('Password must be more than 6 characters long'); //push to registration errors
+    function validate_password(password_input) {
+        if ((password_input.length < 6)) { //if password length is less than 6 characters
+            password_registration_errs.push('Password must be more than 6 characters long'); //push to registration errors
+        }
+        //check if password entered equals to the repeat password entered
+        if (password_input.password !== request.body.repeat_password) { // if password equals confirm password
+            password_registration_errs.push('Password does not match! Please re-enter correct password'); //push error to array
+        }
     }
-    //check if password entered equals to the repeat password entered
-    if (request.body.password !== request.body.repeat_password) { // if password equals confirm password
-        registration_errs.push('Password does not match! Please re-enter correct password'); //push error to array
-    }
+    //Checking if a valid password was inputted
+    validate_password(request.body.password);
+
 
     //Validating email modified from https://www.tutorialspoint.com/validate-email-address-in-java
-    var registration_email = request.body.email.toLowerCase(); //make email case insensitive
-    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(registration_email) == false) {
-        //if email doesn't follow above criteria
-        registration_errs.push('Email is invalid'); //push to errors array
+    function validate_email(email_input) {
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email_input) == false) {
+            //if email doesn't follow above criteria
+            email_registration_errs.push('Email is invalid'); //push to errors array
+        }
     }
+    //Checking if valid email was inputted
+    var registration_email = request.body.email.toLowerCase(); //make email case insensitive
+    validate_email(registration_email);
 
-    if (registration_errs.length == 0) {
+    if ((fullname_registration_errs.length == 0) && (username_registration_errs.length== 0) && (password_registration_errs.length== 0) && (email_registration_errs.length== 0)) {
         //if all data is valid write to the users_data_filename and send to invoice
         //add an example of new user info
         //username = request.body.username.toLowerCase();
@@ -234,7 +249,10 @@ app.post("/process_register", function (request, response) {
         console.log(`saved`)
 
     } else {
-        console.log(registration_errs);
+        console.log (fullname_registration_errs);
+        console.log(username_registration_errs);
+        console.log(password_registration_errs);
+        console.log(email_registration_errs);
         reg_error = "<script> alert(`ERROR! Can not register. Please chack your registration form`);window.history.go(-1);</script>";
         response.send(reg_error);
     }
