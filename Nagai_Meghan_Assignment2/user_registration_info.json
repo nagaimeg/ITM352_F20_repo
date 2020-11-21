@@ -6,5 +6,10 @@
     "ITM 352": {
         "password": "grader",
         "email": "hehe@gmail.com"
+    },
+    "testing": {
+        "fullname": "testing",
+        "password": "testing",
+        "email": "testing@email.com"
     }
 }

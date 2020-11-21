@@ -219,7 +219,7 @@ app.post("/process_register", function (request, response) {
             password_registration_errs.push('Password must be more than 6 characters long'); //push to registration errors
         }
         //check if password entered equals to the repeat password entered
-        if (password_input.password !== request.body.repeat_password) { // if password equals confirm password
+        if (password_input !== request.body.repeat_password) { // if password equals confirm password
             password_registration_errs.push('Password does not match! Please re-enter correct password'); //push error to array
         }
     }
@@ -238,7 +238,7 @@ app.post("/process_register", function (request, response) {
     var registration_email = request.body.email.toLowerCase(); //make email case insensitive
     validate_email(registration_email);
 
-    if ((fullname_registration_errs.length == 0) && (username_registration_errs.length== 0) && (password_registration_errs.length== 0) && (email_registration_errs.length== 0)) {
+    if ((fullname_registration_errs.length == 0) && (username_registration_errs.length == 0) && (password_registration_errs.length == 0) && (email_registration_errs.length == 0)) {
         //if all data is valid write to the users_data_filename and send to invoice
         //add an example of new user info
         //username = request.body.username.toLowerCase();
@@ -246,10 +246,15 @@ app.post("/process_register", function (request, response) {
         users_reg_data[reg_username].fullname = request.body.fullname;
         users_reg_data[reg_username].password = request.body.password;
         users_reg_data[reg_username].email = request.body.email.toLowerCase();
+
+        //write updated object to user_registration_info
+        reg_info_str = JSON.stringify(users_reg_data);
+        fs.writeFileSync(user_registration_info, reg_info_str);
         console.log(`saved`)
 
     } else {
-        console.log (fullname_registration_errs);
+
+        console.log(fullname_registration_errs);
         console.log(username_registration_errs);
         console.log(password_registration_errs);
         console.log(email_registration_errs);
