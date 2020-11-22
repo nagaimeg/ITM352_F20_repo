@@ -21,6 +21,7 @@ app.use(myParser.urlencoded({ extended: true }));
 app.post("/process_form", function (request, response) {
     //check if data is valid display invoice or don't respond
     let POST = request.body;
+    console.log(request.body);
     //assme no error
     haserrors = false;
     //assume no quantities
@@ -40,6 +41,7 @@ app.post("/process_form", function (request, response) {
     if (haserrors == false && hasquantities == true) {//if there are no errors
         //set the quantity data variable to POST
         quantity_data = POST;
+        console.log(quantity_data);
         //load login page
         var contents = fs.readFileSync('./views/login_page.template', 'utf8');//uses the login page
         response.send(eval('`' + contents + '`'));
@@ -53,18 +55,16 @@ app.post("/process_form", function (request, response) {
 
 //computes the values needed to display the invoice
 function display_invoice(POST, response) {
-    if (typeof POST['submit_button'] != 'undefined') {
-
-        invoice_rows = '';
-        subtotal = 0;
-        for (i in products_array) {
-            qty = quantity_data[`quantity${i}`];
-            //sets the quantity amount for each product
-            if (qty > 0) {
-                // displays the product rows of items ordered. Copied from WOD Invoice4 invoice.html
-                extended_price = qty * products_array[i].price
-                subtotal = subtotal + extended_price;
-                invoice_rows += (`
+    invoice_rows = '';
+    subtotal = 0;
+    for (i in products_array) {
+        qty = quantity_data[`quantity${i}`];
+        //sets the quantity amount for each product
+        if (qty > 0) {
+            // displays the product rows of items ordered. Copied from WOD Invoice4 invoice.html
+            extended_price = qty * products_array[i].price
+            subtotal = subtotal + extended_price;
+            invoice_rows += (`
                 <tr>
                 <td style="text-align: left;">${products_array[i].brand} ${products_array[i].product_name}</td>
                 <td align="center">${qty}</td>
@@ -72,34 +72,32 @@ function display_invoice(POST, response) {
                 <td style="text-align: right;">\$${extended_price.toFixed(2)}</td>
               </tr>
       `);
-            }
         }
-
-        // Tax
-        //From WOD Invoice4 Invoice.html 
-        tax_rate = 0.0575;
-        sales_tax = tax_rate * subtotal;
-
-        // Shipping Costs
-        //From WOD Invoice4  Invoice.html
-        if (subtotal <= 50) {
-            shipping_cost = 2;
-        }
-        else if (subtotal <= 100) {
-            shipping_cost = 5;
-        }
-        else {
-            shipping_cost = 0.05 * subtotal; // 5% of subtotal
-        }
-
-        // Total Amount
-        //From WOD Invoice4  Invoice.html
-        total = subtotal + sales_tax + shipping_cost;
-
-        var invoice = fs.readFileSync('./views/invoice.template', 'utf8');//uses the invoice template which was adapted from invoice4
-        response.send(eval('`' + invoice + '`'));
-
     }
+
+    // Tax
+    //From WOD Invoice4 Invoice.html 
+    tax_rate = 0.0575;
+    sales_tax = tax_rate * subtotal;
+
+    // Shipping Costs
+    //From WOD Invoice4  Invoice.html
+    if (subtotal <= 50) {
+        shipping_cost = 2;
+    }
+    else if (subtotal <= 100) {
+        shipping_cost = 5;
+    }
+    else {
+        shipping_cost = 0.05 * subtotal; // 5% of subtotal
+    }
+
+    // Total Amount
+    //From WOD Invoice4  Invoice.html
+    total = subtotal + sales_tax + shipping_cost;
+    var invoice = fs.readFileSync('./views/invoice.template', 'utf8');//uses the invoice template which was adapted from invoice4
+    response.send(eval('`' + invoice + '`'));
+
 }
 //copied from Lab13 Ex4
 function isNonNegInt(q, returnErrors = false) {
@@ -141,7 +139,6 @@ app.post("/process_login", function (request, response) {
         if (request.body.password == users_reg_data[request.body.username].password) {//if password and username is correct
             //response.send(`Thank you ${request.body.username} for logging in!`);
             //Load template and send invoice
-            quantity_data = POST;
             display_invoice(POST, response);
         } else {
             //response.send(`Hey! ${request.body.password} does not match the password we have for you!`)       
@@ -164,6 +161,11 @@ app.get("/login", function (request, response) {
 
 // Display registration page from the login
 app.get("/register", function (request, response) {
+    var fullname_registration_errs = [];
+    var username_registration_errs = [];
+    var password_registration_errs = [];
+    var email_registration_errs = [];
+    var reg_error = "";
     var contents = fs.readFileSync('./views/registration_page.template', 'utf8');
     response.send(eval('`' + contents + '`'));
 });
@@ -215,7 +217,7 @@ app.post("/process_register", function (request, response) {
 
     //Validating Password
     function validate_password(password_input) {
-        password_repeat=request.body.repeat_password
+        password_repeat = request.body.repeat_password
         if ((password_input.length < 6)) { //if password length is less than 6 characters
             password_registration_errs.push('Password must be more than 6 characters long'); //push to registration errors
         }
@@ -252,6 +254,7 @@ app.post("/process_register", function (request, response) {
         reg_info_str = JSON.stringify(users_reg_data);
         fs.writeFileSync(user_registration_info, reg_info_str);
         console.log(`saved`)
+        display_invoice (request.body, response);
 
     } else {
 
@@ -259,8 +262,9 @@ app.post("/process_register", function (request, response) {
         console.log(username_registration_errs);
         console.log(password_registration_errs);
         console.log(email_registration_errs);
-        reg_error = "<script> alert(`ERROR! Can not register. Please chack your registration form`);window.history.go(-1);</script>";
-        response.send(reg_error);
+        reg_error = "alert(`ERROR! Can not register. Please chack your registration form`);";
+        var contents = fs.readFileSync('./views/registration_page.template', 'utf8');
+        response.send(eval('`' + contents + '`'));
     }
 
 })

@@ -9,7 +9,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Purchase Invoice</title>
-  <h1>Thank you ${request.body.username} for your purchase!</h1>
+  <h1>Thank you ${POST.username} for your purchase!</h1>
 </head>
 
 <body>
