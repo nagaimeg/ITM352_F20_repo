@@ -215,11 +215,12 @@ app.post("/process_register", function (request, response) {
 
     //Validating Password
     function validate_password(password_input) {
+        password_repeat=request.body.repeat_password
         if ((password_input.length < 6)) { //if password length is less than 6 characters
             password_registration_errs.push('Password must be more than 6 characters long'); //push to registration errors
         }
         //check if password entered equals to the repeat password entered
-        if (password_input !== request.body.repeat_password) { // if password equals confirm password
+        if (password_input !== password_repeat) { // if password equals confirm password
             password_registration_errs.push('Password does not match! Please re-enter correct password'); //push error to array
         }
     }
