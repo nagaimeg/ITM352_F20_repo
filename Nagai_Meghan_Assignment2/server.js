@@ -1,4 +1,7 @@
-//copied from Lab13 Ex4  and heavily adapted to display the invoice. Referenced Assignment 1 Example for inspiration, help from Professor Port
+//Author: Meghan Nagai
+/*copied from Lab13 Ex4 and Lab14 Ex 4 
+Code was heavily adapted to display the invoice, login and registration page. Referenced Assignment 1 Example for inspiration, also received LOTS of help from Professor Port*/
+
 var data = require('./public/products_data.js');//loads the product.json
 var products_array = data.products_array;//sets the products_array variables
 var express = require('express');//enabling the usage of the express module
@@ -15,7 +18,7 @@ app.all('*', function (request, response, next) {
 });
 
 app.use(myParser.urlencoded({ extended: true }));
-//telling to run the display_invoice function when data is posted assuming not undefined (copied from Lab 13)
+//telling to run the functions when data is posted assuming not undefined (copied from Lab 13)
 
 //processing the products the user wants to purchase
 app.post("/process_form", function (request, response) {
@@ -43,9 +46,12 @@ app.post("/process_form", function (request, response) {
         quantity_data = POST;
         console.log(quantity_data);
         //load login page
+        //defining the possible errors for the login. assume no errors at first
         var incorrect_login = [];
         var incorrect_password = [];
         var incorrect_username = [];
+
+        //display the login page
         var contents = fs.readFileSync('./views/login_page.template', 'utf8');//uses the login page
         response.send(eval('`' + contents + '`'));
 
@@ -261,7 +267,7 @@ app.post("/process_register", function (request, response) {
     var registration_email = request.body.email.toLowerCase(); //make email case insensitive
     validate_email(registration_email);
 
-    if ((fullname_registration_errs.length == 0) && (username_registration_errs.length == 0) && (password_registration_errs.length == 0) &&(password_registration_errs==0) && (email_registration_errs.length == 0)) {
+    if ((fullname_registration_errs.length == 0) && (username_registration_errs.length == 0) && (password_registration_errs.length == 0) &&(password_repeat_errs.length == 0) && (email_registration_errs.length == 0)) {
         //if all data is valid write to the users_data_filename and send to invoice
         //add an example of new user info
         //username = request.body.username.toLowerCase();
@@ -281,6 +287,7 @@ app.post("/process_register", function (request, response) {
         console.log(fullname_registration_errs);
         console.log(username_registration_errs);
         console.log(password_registration_errs);
+        console.log(password_repeat_errs);
         console.log(email_registration_errs);
         reg_error = "alert(`ERROR! Can not register. Please check your registration form`);";
         var contents = fs.readFileSync('./views/registration_page.template', 'utf8');

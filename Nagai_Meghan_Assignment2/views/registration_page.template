@@ -30,7 +30,7 @@
                 <!--Form for the usernmae-->
                 <li><label for="username"><b>Username</b></label></li><br>
                 <li><input type="text" name="username" size="40" placeholder="enter username"
-                        value="${typeof request.body.usernmae != 'undefined' ? request.body.username : ''}"></li>
+                        value="${typeof request.body.username != 'undefined' ? request.body.username : ''}"></li>
                 <!--display the username errors, if there are any-->
                 <span style="color:red;">${username_registration_errs.join(",")}</span><br>
                 
