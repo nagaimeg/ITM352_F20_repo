@@ -156,10 +156,11 @@ app.post("/process_login", function (request, response) {
     var incorrect_login = [];
     var incorrect_password = [];
     var incorrect_username = [];
-
+    //make the inputted username lowercase
+    var username_lowercase = request.body.username.toLowerCase();
     //if username exists, get password
-    if (typeof users_reg_data[request.body.username] != 'undefined') {//if user inputted data
-        if (request.body.password == users_reg_data[request.body.username].password) {
+    if (typeof users_reg_data[username_lowercase] != 'undefined') {//if user inputted data
+        if (request.body.password == users_reg_data[username_lowercase].password) {
             //if password and username is correct display the invoice
             display_invoice(POST, response);
         } else {
@@ -218,8 +219,8 @@ app.post("/process_register", function (request, response) {
             //push an error that the full name needs to be under 30 characters
             fullname_registration_errs.push('max fullname characters is 30');
         }
-        //if the full name was not all letters: https://stackoverflow.com/questions/11431154/regular-expression-for-username-start-with-letter-and-end-with-letter-or-number
-        if (/^[A-Za-z]+$/.test(name_input) == false) {
+        //if the full name was not all letters: https://stackoverflow.com/questions/9289451/regular-expression-for-alphabets-with-spaces
+        if (/^[A-Za-z ]+$/.test(name_input) == false) {
             //push an error that the full name needs to all letters
             fullname_registration_errs.push('Full name can only be letters');
         }

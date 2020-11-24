@@ -1,20 +1,17 @@
 {
-    "12345": {
-        "fullname": "testing",
-        "password": "this is a test",
-        "email": "checking@gmail.com"
-    },
-    "user1": {
-        "password": "password",
-        "email": "user1@gmail.com"
-    },
-    "ITM 352": {
-        "password": "grader",
-        "email": "hehe@gmail.com"
-    },
     "hahaha": {
         "fullname": "hahaha",
         "password": "hahaha",
         "email": "hahaha@gmail.com"
+    },
+    "itm352": {
+        "fullname": "ITM Grader",
+        "password": "grader",
+        "email": "itm352@gmail.com"
+    },
+    "name": {
+        "fullname": "Name",
+        "password": "namees",
+        "email": "name@gmail.com"
     }
 }

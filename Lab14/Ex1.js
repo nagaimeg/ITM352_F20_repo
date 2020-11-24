@@ -8,7 +8,8 @@ users_reg_data = JSON.parse(data);
 
 //if username exists, get password
 if (typeof users_reg_data['itm352'] != 'undefined') {
-    console.log(users_reg_data['itm352']['password']=='grader')
+    console.log(users_reg_data['itm352']['password']=='grader');
+    console.log(users_reg_data['itm352']['password'])
 }
 
 //console.log(users_reg_data['dport']['password']);
