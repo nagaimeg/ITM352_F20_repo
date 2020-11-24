@@ -43,6 +43,9 @@ app.post("/process_form", function (request, response) {
         quantity_data = POST;
         console.log(quantity_data);
         //load login page
+        var incorrect_login = [];
+        var incorrect_password = [];
+        var incorrect_username = [];
         var contents = fs.readFileSync('./views/login_page.template', 'utf8');//uses the login page
         response.send(eval('`' + contents + '`'));
 
@@ -129,10 +132,22 @@ if (fs.existsSync(user_registration_info)) {
 
 app.use(myParser.urlencoded({ extended: true }));
 
+// Display login page from the registration
+app.get("/login", function (request, response) {
+    var incorrect_login = [];
+    var incorrect_password = [];
+    var incorrect_username = [];
+    var contents = fs.readFileSync('./views/login_page.template', 'utf8');
+    response.send(eval('`' + contents + '`'));
+});
+
 app.post("/process_login", function (request, response) {
     // Process login form POST and redirect to logged in page if ok, back to login page if not
     console.log(quantity_data);
     var POST = request.body;
+    var incorrect_login =[];
+    var incorrect_password = [];
+    var incorrect_username = [];
 
     //if username exists, get password
     if (typeof users_reg_data[request.body.username] != 'undefined') {//if user inputted data
@@ -142,28 +157,32 @@ app.post("/process_login", function (request, response) {
             display_invoice(POST, response);
         } else {
             //response.send(`Hey! ${request.body.password} does not match the password we have for you!`)       
-            incorrect_password = "<script> alert('password input does not match the password we have for you! Please try again!');window.history.go(-1);</script>";
-            response.send(incorrect_password);
-
+            //incorrect_password = "<script> alert('password input does not match the password we have for you! Please try again!');window.history.go(-1);</script>";
+            //response.send(incorrect_password);
+            incorrect_password.push('password input does not match the password we have for you! Please try again!');
+            incorrect_login = "alert(`ERROR! Can not login. Please check your login`);";
+            var contents = fs.readFileSync('./views/login_page.template', 'utf8');
+            response.send(eval('`' + contents + '`'));
 
         }
     } else {
-        incorrect_username = "<script> alert('Username does not exist! Please check your username');window.history.go(-1);</script>";
-        response.send(incorrect_username)
+        //incorrect_username = "<script> alert('Username does not exist! Please check your username');window.history.go(-1);</script>";
+        //response.send(incorrect_username);
+        incorrect_username.push('Username does not exist! Please check your username');
+        incorrect_login = "alert(`ERROR! Can not login. Please check your login`);";
+        var contents = fs.readFileSync('./views/login_page.template', 'utf8');
+        response.send(eval('`' + contents + '`'));
     }
 
 });
-// Display login page from the registration
-app.get("/login", function (request, response) {
-    var contents = fs.readFileSync('./views/login_page.template', 'utf8');
-    response.send(eval('`' + contents + '`'));
-});
+
 
 // Display registration page from the login
 app.get("/register", function (request, response) {
     var fullname_registration_errs = [];
     var username_registration_errs = [];
     var password_registration_errs = [];
+    var password_repeat_errs =[];
     var email_registration_errs = [];
     var reg_error = "";
     var contents = fs.readFileSync('./views/registration_page.template', 'utf8');
@@ -175,6 +194,7 @@ app.post("/process_register", function (request, response) {
     var fullname_registration_errs = [];
     var username_registration_errs = [];
     var password_registration_errs = [];
+    var password_repeat_errs =[];
     var email_registration_errs = [];
     //validate the reg info
 
@@ -203,10 +223,10 @@ app.post("/process_register", function (request, response) {
         }
         // check for numbers& letters from: https://stackoverflow.com/questions/11431154/regular-expression-for-username-start-with-letter-and-end-with-letter-or-number
         if ((/^[0-9a-zA-Z]+$/).test(username_input) == false) {
-            username_registration_errs.push('Username must be numbers or letters. Please go back and change your username');
+            username_registration_errs.push('Username must be numbers or letters');
         }
         if (username_input.length < 4 || username_input.length > 10) {
-            username_registration_errs.push('Username must be between 4 or 10 characters long. Please go back and change your username');
+            username_registration_errs.push('Username must be between 4 or 10 characters long');
         }
     }
     //Checking if a valid username was inputted
@@ -223,7 +243,7 @@ app.post("/process_register", function (request, response) {
         }
         //check if password entered equals to the repeat password entered
         if (password_input !== password_repeat) { // if password equals confirm password
-            password_registration_errs.push('Password does not match! Please re-enter correct password'); //push error to array
+            password_repeat_errs.push('Password does not match! Please re-enter correct password'); //push error to array
         }
     }
     //Checking if a valid password was inputted
@@ -241,7 +261,7 @@ app.post("/process_register", function (request, response) {
     var registration_email = request.body.email.toLowerCase(); //make email case insensitive
     validate_email(registration_email);
 
-    if ((fullname_registration_errs.length == 0) && (username_registration_errs.length == 0) && (password_registration_errs.length == 0) && (email_registration_errs.length == 0)) {
+    if ((fullname_registration_errs.length == 0) && (username_registration_errs.length == 0) && (password_registration_errs.length == 0) &&(password_registration_errs==0) && (email_registration_errs.length == 0)) {
         //if all data is valid write to the users_data_filename and send to invoice
         //add an example of new user info
         //username = request.body.username.toLowerCase();
@@ -262,7 +282,7 @@ app.post("/process_register", function (request, response) {
         console.log(username_registration_errs);
         console.log(password_registration_errs);
         console.log(email_registration_errs);
-        reg_error = "alert(`ERROR! Can not register. Please chack your registration form`);";
+        reg_error = "alert(`ERROR! Can not register. Please check your registration form`);";
         var contents = fs.readFileSync('./views/registration_page.template', 'utf8');
         response.send(eval('`' + contents + '`'));
     }
