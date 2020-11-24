@@ -9,14 +9,9 @@
         "password": "grader",
         "email": "itm352@gmail.com"
     },
-    "name": {
-        "fullname": "Name",
-        "password": "namees",
-        "email": "name@gmail.com"
-    },
-    "newaccount": {
-        "fullname": "new account",
-        "password": "newpassword",
-        "email": "new@email.com"
+    "mnagai": {
+        "fullname": "Meghan Nagai",
+        "password": "123Abc",
+        "email": "nagaimeg@hawaii.edu"
     }
 }
