@@ -9,6 +9,7 @@
     <!--link to the login_registration_style.css for formatting-->
     <link rel="stylesheet" href="./login_registration_style.css">
     <title>Registration Page</title>
+    <!--alert if there are registration errors-->
     <script>window.onload = function () { ${ reg_error } }</script>
 </head>
 
@@ -37,7 +38,7 @@
                 <!--Form for the password-->
                 <li><label for="password"><b>Password</b></label></li><br>
                 <li><input type="password" name="password" size="40" placeholder="enter password" value="${typeof request.body.password != 'undefined' ? request.body.password : ''}"></li>
-                
+                <!--display password errors if there are any-->
                 <span style="color:red;">${password_registration_errs.join(",")}</span>
                 <br>
                 <!--Repeat password from-->
