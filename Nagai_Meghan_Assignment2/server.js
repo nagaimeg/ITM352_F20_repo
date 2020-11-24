@@ -163,6 +163,7 @@ app.post("/process_login", function (request, response) {
         if (request.body.password == users_reg_data[username_lowercase].password) {
             //if password and username is correct display the invoice
             display_invoice(POST, response);
+            console.log('user has successfully logged in');
         } else {
             //if the password is not correct display that password is not correct
             incorrect_password.push('password input does not match the password we have for you! Please try again!');
@@ -170,6 +171,7 @@ app.post("/process_login", function (request, response) {
             incorrect_login = "alert(`ERROR! Can not login. Please check your login`);";
             var contents = fs.readFileSync('./views/login_page.template', 'utf8');
             response.send(eval('`' + contents + '`'));
+            console.log('password was incorrect');
 
         }
     } else {
@@ -179,6 +181,7 @@ app.post("/process_login", function (request, response) {
         incorrect_login = "alert(`ERROR! Can not login. Please check your login`);";
         var contents = fs.readFileSync('./views/login_page.template', 'utf8');
         response.send(eval('`' + contents + '`'));
+        console.log('username was incorrect');
     }
 
 });
