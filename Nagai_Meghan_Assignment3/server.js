@@ -30,7 +30,7 @@ app.post("/process_form", function (request, response) {
     //assume no quantities
     hasquantities = false;
     //check if no errors if error true, check if has quantities if there are, then true
-    for (i = 0; i < `${(products_array[`jewelry`][i])}`.length;) { //for any product
+    for (i = 0; i < `${(products_array[`jewelry`][i])}`.length;) {
         qty = request.body[`quantity${i}`];
         if (qty > 0) {
             hasquantities = true;
