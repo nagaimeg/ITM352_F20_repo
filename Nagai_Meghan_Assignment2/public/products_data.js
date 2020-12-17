@@ -42,5 +42,5 @@ products_array = [
 
 //if inputs are not undefined export products array data
 if (typeof module != 'undefined') {
-    module.exports.all_products = all_products;
+    module.exports.products_array = products_array;
 }

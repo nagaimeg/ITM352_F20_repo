@@ -3,6 +3,8 @@
 /*Format body to display the starry.jpg*/
 body {
     position: relative;
+    width: 21cm;  
+    height: 29.7cm; 
     margin: 0 auto; 
     color: #001028;
     font-family: Arial, sans-serif; 
@@ -63,27 +65,18 @@ form li {
   /*format the div to be consistent with the products display*/
   div {
     background: lightpink;
-    max-width: width 100%;;
+    max-width:1200px;
     height: 275px;
   }
 /*format the "if you have an account"*/
 div.login_redirect {
 height:50px;
-text-align: center;
-width: 100%;
 background:white;
 font-size:24px;
   }
 /*format the "if you don't have an account"*/
   div.registration_redirect {
-      height:50px;
-      text-align: center;
-      width: 100%;
-      background:white;
-      font-size:24px;
+    height:50px;
+    background:white;
+    font-size:24px;
       }
-
-/*center nav bar images*/
-nav {
-text-align:center;
-}

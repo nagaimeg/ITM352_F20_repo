@@ -16,16 +16,14 @@
 </head>
 
 <body>
-    <h1>Please Register an Account to Purchase Items</h1>
 
-<!--navigation bar-->
-<nav>
-<a href="./index.html"><img src="images/home.png"height="200px" width="200px"></a>
-  <a href="./necklace_display.html"><img src="images/necklaces.png"height="200px" width="200px"></a>
-  <a href="./bracelet_display.html"><img src="images/bracelets.png"height="200px" width="200px"></a>
-  <a href="./earring_display.html"><img src="images/earrings.png"height="200px" width="200px"></a>
-  <a href="./cart.html"><img src="images/cart.png"height="200px" width="200px"></a>
-</nav>
+    <center>
+        <a href="index.html">Home</a>
+        <script>nav_bar(this_product_key, products_data);</script>
+        <a href="cart.html">Cart</a>
+    </center>
+
+    <h1>Please Register an Account to Purchase Items</h1>
 
     <div>
         <h2>Please fill in this form to create an account.</h2>
