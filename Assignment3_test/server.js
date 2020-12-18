@@ -2,7 +2,8 @@
 /*copied from Lab13 Ex4 and Lab14 Ex 4 
 Code was heavily adapted to display the invoice, login and registration page. Referenced Assignment 1 Example for inspiration, also received LOTS of help from Professor Port*/
 
-var products = require('./public/products_data.js');//loads the product data
+var data = require('./public/products_data.js');//loads the product data
+var allProducts = data.allProducts; //set variable 'allProducts' to the products_data.js file
 const queryString = require('query-string'); // so it'll load querystring
 var express = require('express');//enabling the usage of the express module
 var app = express();//setting the express module as app
@@ -42,47 +43,37 @@ app.post("/display_cart", function (request, response) { // posts data from the 
 });
 
 app.post("/process_form", function (request, response) {
-    // When the user hits the "add to cart" button for a clothing product, this app.post will add the quantity data to the session object
-    var POST = request.body
-    console.log(POST);
+    let POST = request.body;
 
-    //check if quantity is valid, if so add to session, otherwise return error
-    haserrors = false;
-    //assume no quantities
-    hasquantities = false;
-    //check if no errors if error true, check if has quantities if there are, then true
-    for (i in products_array) {
-        qty = request.body[`quantity${i}`];
-        if (qty > 0) {
-            hasquantities = true;
+    if (typeof POST['addProducts${i}'] != 'undefined') { //if the POST request is not undefined
+        var validAmount = true; // creates variable 'validAmount' and assumes it will be true
+        var amount = false; // create variable 'amount' and assuming it will be false
+
+        for (i = 0; i < `${(products_array[`jewelry`][i])}`.length; i++) { //for any product in array
+            qty = POST[`quantity${i}`]; //set variable 'qty' to the value in quantity_textbox
+
+            if (qty > 0) {
+                amount = true; // works if value > 0
+            }
+
+            if (isNonNegInt(qty) == false) { //if isNonNegInt is false then it is an invalid input,
+                validAmount = false; // not a valid amount
+            }
+
         }
-        if (isNonNegInt(qty) == false) {
-            haserrors = true;
+
+        const stringified = queryString.stringify(POST); //converts the data in POST to a JSON string and sets it to variable 'stringified'
+
+        if (validAmount && amount) { //if it is both a quantity over 0 and is valid
+            response.redirect("./login.html?" + stringified); // redirect the page to the login page
+            return; //stops function
         }
+
+        else { response_string = "<script> alert('Error! One or more of your values are invalid! Please go back and put valid qunatities');window.history.go(-1);</script>";
+        response.send(response_string);}
+
     }
 
-    //if there are quantities and there are no error display the invoice if not then alert
-    if (haserrors == false && hasquantities == true) {
-        console.log(`products requested!`)
-
-        if (has_errors == false) {
-            if (typeof request.session.cart == 'undefined') {
-                request.session.cart = {};
-            }
-            if (typeof request.session.cart[POST.product_key] == 'undefined') {
-                request.session.cart[POST.product_key] = [];
-            }
-            request.session.cart[POST.product_key][POST.product_index] = Number.parseInt(POST.quantity);
-            response_msg = `Added ${POST.quantity} to your cart!`;
-        }
-        response_msg = `Added ${POST.quantity} to your cart!`;
-        console.log(request.session);
-        response.json({"message":response_msg});
-
-} else {//if there are errors then show error
-    response_string = "<script> alert('Error! One or more of your values are invalid! Please go back and put valid qunatities');window.history.go(-1);</script>";
-    response.send(response_string);
-}
 });
 
 

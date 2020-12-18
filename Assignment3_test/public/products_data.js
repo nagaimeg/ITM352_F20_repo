@@ -1,18 +1,20 @@
 //Author: Meghan Nagai
 //Followed Assignmnet 1 instructions and looked at Smart Phone Products
 //Adapted code from Assignment 1 & 2 and added more products to create more pages
+//Referenced Mark Ushiroda and Lexy Dennis code
+
 products_array=[
         {
-        'Necklaces': "necklaces",
+        'jewelry': "necklaces",
         },
         {
-        'Bracelets': "bracelets",
+        'jewelry': "bracelets",
         },
         {
-        'Jewelry': "earrings",
+        'jewelry': "earrings",
         },
         {
-        'Rings': "rings",
+        'jewelry': "rings",
         },
 ];
 
@@ -176,7 +178,14 @@ rings = [
     }
 ];
 
+var allProducts = {
+    "necklaces": necklaces,
+    "bracelets": bracelets,
+    "earrings": earrings,
+    "rings": rings, 
+  }
+
 //if inputs are not undefined export products array data
 if (typeof module != 'undefined') {
-    module.exports.products_array = products_array;
+    module.exports.allProducts = allProducts;
   }
