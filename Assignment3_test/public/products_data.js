@@ -3,16 +3,16 @@
 //Adapted code from Assignment 1 & 2 and added more products to create more pages
 products_array=[
         {
-        'jewelry': "necklaces",
+        'Necklaces': "necklaces",
         },
         {
-        'jewelry': "bracelets",
+        'Bracelets': "bracelets",
         },
         {
-        'jewelry': "earrings",
+        'Jewelry': "earrings",
         },
         {
-        'jewelry': "rings",
+        'Rings': "rings",
         },
 ];
 
