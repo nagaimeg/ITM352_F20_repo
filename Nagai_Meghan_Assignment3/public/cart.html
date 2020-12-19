@@ -41,8 +41,9 @@
         return "";
     };
 
+    //referenced from Johnathan Kan
     //made with help from stackoverflow.com 
-    function GoBackWithRefresh(event) { //takes you back to previous page
+    function GoBackWithRefresh(event) { //takes user back to previous page
         var past = document.referrer;
         var pastPage = past.split('/').pop(); 
 
@@ -55,25 +56,9 @@
         }
     };
 
-    //function to change product amount by positive 1 in cart 
-    function addItem(theProduct, theIndex) { 
-        var thisRowQty = parseInt(sessionStorage.getItem(`${pk}${i}`)); 
-        thisRowQty += 1; //adds 1
-        sessionStorage.setItem(`${theProduct}${theIndex}`, thisRowQty); //gives the new value to the session 
-        window.location.reload(); //reloads the page 
-    };
-    //function to change product amount by negative 1 in cart 
-    function removeItem(theProduct, theIndex) { 
-        var thisRowQty = parseInt(sessionStorage.getItem(`${theProduct}${theIndex}`)); 
-        if (thisRowQty > 0) { 
-            thisRowQty -= 1; //subtract 1
-            sessionStorage.setItem(`${theProduct}${theIndex}`, thisRowQty); //gives the session the new value 
-            window.location.reload(); //reloads the page 
-        }
-
-    };
 
 //insures that teh cart has proper data and that the user is logged in 
+//from Johnathan Kan
     function checkCart() {
         if (cart.length == 0) {
             console.log(cart)
@@ -106,7 +91,7 @@
     <title>Shopping Cart</title>
 
 </head>
-<body id="top">
+<body>
 
     <!-- Header -->
     <!DOCTYPE html>
@@ -117,7 +102,7 @@
     
     <body>
         <link rel="stylesheet" href="invoice-style.css">
-
+        <nav style="width: 100%; text-align: center;">
             <a href="./index.html"><img src="images/home.png" height="200px" width="200px"></a>
             <a href="./product_display.html?products_key=necklaces"><img src="images/necklaces.png" height="200px"
                 width="200px"></a>
@@ -133,21 +118,24 @@
                     document.write(`<a href="./login"><img src="images/login.png" height="200px" width="200px"></a>`);
                 }
             </script>
+<div style="background-color: palevioletred;">
 
+    <!--Referenced from Johnathan Kan-->
     <script> // thanks the user by name
         var theUser = getCookie('name'); 
         var theUsername = getCookie('username'); 
         if (theUsername != '') { //if no name because it is not required uses the username 
             document.write(`
-                <p align="center">Hello, ${theUsername}! Please review your shopping cart order below</p>
-                <p align="center">Not ${theUsername}? Please log in <a href="./login" >here</a></p><br />
+                <h1 align="center">Hi ${theUsername}! You are logged in! Check your quantities before checking out! </h1>
             `)
         } else { //if there is no cookie it tells to login 
             document.write(`
-                <p align="center">You are not logged in: Click <a href="./login">here</a> to log in</p>
+                <h1 align="center">You are not logged in: Click <a href="./login">here</a> to log in</h1>
             `)
         };
     </script>
+    </div>
+</nav>
     </div>
     </section>
 <br>
@@ -171,9 +159,11 @@
 
                         qty = cart[pk][i];
                         if (qty > 0) { //there has to be at least one quantity entered
-                            extended_price = qty * allProducts[pk][i].price 
-                            subtotal += extended_price; 
+                            product_price = parseInt(allProducts[pk][i].price )
+                            extended_price = qty * product_price 
 
+                            subtotal += extended_price; 
+                            
                             document.write(`
                             <tr>
                                 <td style= "text-align: left" width="40%">${allProducts[pk][i].product_name}</td>
@@ -241,9 +231,20 @@
         <!-- Purchase button that will redirect to invoice or one can continue shopping and it goes back-->
 <section>
     <footer>
+<!--Referenced from Johnathan Kan-->
+        <center>
     <div class= end>
-        <input type="submit" value='Continue Shopping' class="button big special" onclick="GoBackWithRefresh()">
-        <input type="submit" value='Purchase' class="button big special" name="purchase_submit_button" onclick="checkCart()">
+        <input type="submit"  
+        style="height:40px; width:200px; margin:auto 0; text-align: center; background-color: palevioletred; font-size: 20px;  font-weight: 700;" 
+        value='Keep shopping!' class="button big special" onclick="GoBackWithRefresh()">
+
+        <br><br>
+
+        <input type="submit" 
+        style="height:40px; width:200px; margin:auto 0; text-align: center; background-color: palevioletred; font-size: 20px;  font-weight: 700; "
+        value='Checkout!' class="button big special" name="purchase_submit_button" onclick="checkCart()">
+        <br><br>
+    </center>
 </div>
 </footer>
 </section>

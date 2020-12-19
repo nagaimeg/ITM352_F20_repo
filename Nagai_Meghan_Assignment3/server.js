@@ -214,6 +214,7 @@ app.post("/process_login", function (request, response) {
 app.get("/logout", function (request, response) {
     var username = request.cookies.username;
     response.clearCookie('username');
+    response.clearCookie('email');
     response.redirect('./logout.html?');
 });
 
@@ -330,9 +331,8 @@ app.post("/process_register", function (request, response) {
         fs.writeFileSync(user_registration_info, reg_info_str);
         console.log(`saved`)
         
-        response.cookie('username', `${request.body.username}`, { maxAge: 6000 * 1000 }).
-
-        response.cookie('email', `${users_reg_data[reg_username].email}`)
+        response.cookie('username', `${request.body.username}`, { maxAge: 6000 * 1000 })
+        response.cookie('email', `${request.body.email}`, { maxAge: 6000 * 1000 })
         response.redirect('./cart.html?');
 
     } else {
@@ -445,7 +445,7 @@ console.log(all_products[pk][i].price)
  
      
      var mailOptions = {
-         from: 'nagaimeg@hawaii.edu',
+         from: 'nagaimeg@hawaii.edu',//mail from my email
          to: user_email,
          subject: 'Your phoney invoice',
          html: invoice_str
@@ -453,9 +453,13 @@ console.log(all_products[pk][i].price)
  
      transporter.sendMail(mailOptions, function (error, info) {
          if (error) {
-             invoice_str += `<br>There was an error and your invoice could not be emailed : to ${user_email}`;
+             invoice_str += `<br>There was an error and your invoice could not be emailed : to ${user_email}
+             
+             <br><br> <center><a href="./logout"><img src="images/logout.png" height="200px" width="200px"></a></center>`;
          } else {
-             invoice_str += `<br>Your invoice was mailed to ${user_email}`;
+             invoice_str += `<br>Your invoice was mailed to ${user_email}
+             
+             <br><br> <a href="./logout"><img src="images/logout.png" height="200px" width="200px"></a>`;
          }
          response.send(invoice_str);
      });
