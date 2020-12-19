@@ -1,6 +1,8 @@
 //Author: Meghan Nagai
-/*copied from Lab13 Ex4 and Lab14 Ex 4 
-Code was heavily adapted to display the invoice, login and registration page. Referenced Assignment 1 Example for inspiration, also received LOTS of help from Professor Port*/
+//Referenced from Lab13 Ex4 and Lab14 Ex 4 Lab 15
+//Copied from Assignment 1 and 2 
+//Code was heavily adapted to use multiple pages, sessions and cookies
+//Reference: 
 
 var data = require('./public/products_data.js');//loads the product data
 var allProducts = data.allProducts; //set variable 'allProducts' to the products_data.js file
@@ -49,15 +51,15 @@ app.post("/process_form", function (request, response) {
         var validAmount = true; // creates variable 'validAmount' and assumes it will be true
         var amount = false; // create variable 'amount' and assuming it will be false
 
-        for (i = 0; i < `${(products_array[`jewelry`][i])}`.length; i++) { //for any product in array
-            qty = POST[`quantity${i}`]; //set variable 'qty' to the value in quantity_textbox
+        for (i = 0; i < `${(products_array[`jewelry`][i])}`.length; i++) { //for all products check if the input
+            qty = POST[`quantity${i}`]; 
 
             if (qty > 0) {
-                amount = true; // works if value > 0
+                amount = true; // is there an amount?
             }
 
-            if (isNonNegInt(qty) == false) { //if isNonNegInt is false then it is an invalid input,
-                validAmount = false; // not a valid amount
+            if (isNonNegInt(qty) == false) { //if it is not a nonnegative integer
+                validAmount = false; //show that it is not a valid quantity
             }
 
         }
@@ -65,7 +67,8 @@ app.post("/process_form", function (request, response) {
         const stringified = queryString.stringify(POST); //converts the data in POST to a JSON string and sets it to variable 'stringified'
 
         if (validAmount && amount) { //if it is both a quantity over 0 and is valid
-            response.redirect("./login.html?" + stringified); // redirect the page to the login page
+            var contents = fs.readFileSync('./views/login_page.template', 'utf8');
+            response.send(eval('`' + contents + '`' + stringified));// redirect the page to the login page
             return; //stops function
         }
 
@@ -135,125 +138,6 @@ function isNonNegInt(q, returnErrors = false) {
 }
 
 
-//reference kydee
-app.get("/display_cart", function (request, response, next) { //created to display items in the shopping cart
-    console.log(request.session.cart); //log the session cart data into the console
-    var str = "";
-    str += `
-    <header>
-    <h1>
-    <meta charset="utf-8">
-    <title>CULT GAIA</title>
-    <link href="products_style.css" rel="stylesheet"> CULT GAIA
-</h1>
-    <li><a href="index.html">HOME</a></li>
-    <li><a class="active" href="collection_display.html">SHOP BY COLLECTION</a></li>
-    <li>
-        <a href="registrationPage.html">REGISTER</a>
-    </li>
-    <li><a href="loginPage.html">LOGIN</a></li>
-    <li><a href="/display_cart">CART</a></li>
-</ul>
-<br>
-  
-  
-  </header>
-  <h2> Cart </h2>`
-
-
-    if (session.username != undefined) {
-        str += `<h3> <p style="color:red">Welcome ${session.username}! You are currently logged in. </p></h3> <!--UI message for user if they are logged in-->`
-    }
-
-    //variabes created to keep track of extended price, subtotal, tax rate and shipping costs
-    extended_price = 0;
-    subtotal = 0;
-    var tax_rate = 0.0575;
-    shipping = 0;
-
-    //for loops that generate products that the customer orders and posts them on the cart page
-    for (product_type in request.session.cart) {
-        for (i = 0; i < products[product_type].length; i++) {
-            //variable used to check that the quantities of the products
-            q = request.session.cart[product_type][`quantity${i}`];
-            if (q == 0) {
-                continue;
-            }
-            //extended price is the price of each product times the amount of that item added
-            extended_price = products[product_type][i]["price"] * q;
-            subtotal += extended_price;
-            //this string will be posted on the cart page
-            str += `
-     
-  
-      <body>     
-      <form action="/checkout" method="POST">
-  
-      <div class="shop-item">
-      <!--List the product names-->
-              <h4><span class="shop-item-title">${products[product_type][i]["product"]}</span>
-              <hr class="space" />
-              <!--Show the images of each product-->
-              <div class="enlarge">
-                  <img class="shop-item-image" src=${products[product_type][i]["image"]}>
-              </div>
-              <!--Show the quantity of each product-->
-              <hr class="space" />
-              <label id="quantity${i}_label" class="shop-item-quantity">Quantity: ${q}</label>
-              <div class="shop-item-details">
-              <!--List the prices and extended prices-->
-                  <hr class="space" />
-                  <span class="shop-item-price">Price: $${extended_price}</span><br></h4>
-              </div>
-              </div>
-         </form>
-  </body>
-  `;
-        }
-    }
-    // Compute shipping
-    if (subtotal > 0 && subtotal <= 2500) { // If subtotal is less than or equal to $2,500, shipping = $5
-        shipping = 5;
-    } else if (subtotal > 2500 && subtotal <= 5000) { // Else if subtotal is less than or equal to $5,000, shipping = $10
-        shipping = 10;
-    } else if (subtotal > 5000) { // Else if subtotal is greater than $5,000, shipping = $0 (free)
-        shipping = 0; // Free shipping!
-    }
-    //calculate the tax by multiplying the tax rate to the subtotal
-    var tax = tax_rate * subtotal;
-    //calculate the grand total by adding subtotal with tax and shipping
-    var grand_total = subtotal + tax + shipping;
-
-    //add html to display cost information to the str variable
-    str += ` 
-    <form action="/checkout" method="POST">
-    <footer>
-    <div class="shop-item-description">Subtotal: $${subtotal.toFixed(2)}</div>
-    <div class="shop-item-description">Shipping: $${shipping.toFixed(2)}</div>
-    <div class="shop-item-description">Tax: $${tax.toFixed(2)}</div>
-    <div class="shop-item-description">Grandtotal: $${grand_total.toFixed(2)}</div>
-  
-    <input type="submit" value="Checkout Cart!" name="submit_cart">
-  </footer>
-  </form>`
-    if (grand_total == 0) {
-        response.send(`
-    <h2>Your cart is empty <br>Please go <a href="./">back</a> and add items to view your cart</h2>`);
-    }
-
-    response.send(str);
-
-});
-
-app.post("/checkout", function (request, response) { // posts data from the display_cart form, with action named "display_cart"
-    if (typeof session.username != "undefined") {
-        response.redirect('invoice.html'); //changed
-    } else {
-        response.redirect('loginPage.html'); //changed
-
-    }
-});
-
 
 /*Login and Registration 
 copied and adapted from Lab14 Ex4.js*/
@@ -297,9 +181,22 @@ app.post("/process_login", function (request, response) {
     var username_lowercase = request.body.username.toLowerCase();
     //if username exists, get password
     if (typeof users_reg_data[username_lowercase] != 'undefined') {//if user inputted data
+
+        console.log(request.body.password)
+        console.log(request.body.username)
+
         if (request.body.password == users_reg_data[username_lowercase].password) {
             //if password and username is correct display the invoice
-            response.cookie('username', 'Meghan', { maxAge: 6000 * 1000 }).redirect('./cart.html?');
+
+            //create cookie for username
+            response.cookie('username', `${request.body.username}`, { maxAge: 6000 * 1000 })
+            var user = users_reg_data[request.body.username];
+            console.log(user.email)
+            //create cookie for email
+            response.cookie('email', `${user.email}`)
+
+            //redirect to cart
+            response.redirect('./cart.html?');
         } else {
             //if the password is not correct display that password is not correct
             incorrect_password.push('password input does not match the password we have for you! Please try again!');
@@ -325,7 +222,8 @@ app.post("/process_login", function (request, response) {
 //log user out
 app.get("/logout", function (request, response) {
     var username = request.cookies.username;
-    response.clearCookie('username').send(`logged out ${username}`);
+    response.clearCookie('username');
+    response.send(`logged out ${username}`);
 });
 
 
@@ -440,7 +338,11 @@ app.post("/process_register", function (request, response) {
         reg_info_str = JSON.stringify(users_reg_data);
         fs.writeFileSync(user_registration_info, reg_info_str);
         console.log(`saved`)
-        response.send(`registered!`);
+        
+        response.cookie('username', `${request.body.username}`, { maxAge: 6000 * 1000 }).
+
+        response.cookie('email', `${users_reg_data[reg_username].email}`)
+        response.redirect('./cart.html?');
 
     } else {
         //if user data is not valid, alert user and display errors in the console

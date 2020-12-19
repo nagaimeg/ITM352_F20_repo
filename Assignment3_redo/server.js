@@ -142,7 +142,8 @@ app.post("/process_login", function (request, response) {
 //log user out
 app.get("/logout", function (request, response) {
   var username = request.cookies.username;
-  response.clearCookie('username').send(`logged out ${username}`);
+  response.clearCookie('username')
+  response.redirect('./index.html');
 });
 
 

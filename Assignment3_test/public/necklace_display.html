@@ -40,7 +40,7 @@
 
   //referenced from Johnathan Kan code
   function saveProduct(i) { //Function to save amount to cart
-    var amountProduct = quantity_form[`quantity_textbox${i}`].value;
+    var amountProduct = product_form[`quantity${i}`].value;
     if (isNonNegInt(amountProduct) == true) { //if there are no errors...
       sessionStorage[`${product}${i}`] = amountProduct; //save this amount to this user's session
       document.getElementById(`cart${i}`).innerHTML = 'Added to Cart!'; //let user know product was added
@@ -125,7 +125,14 @@
     <a href="./bracelet_display.html"><img src="images/bracelets.png" height="200px" width="200px"></a>
     <a href="./earring_display.html"><img src="images/earrings.png" height="200px" width="200px"></a>
     <a href="./ring_display.html"><img src="images/rings.png" height="200px" width="200px"></a>
-    <a href="./login"><img src="images/login.png" height="200px" width="200px"></a>
+    <script>
+      var username = getCookie('username');
+      if(username != "") {
+          document.write(`<a href="./logout"><img src="images/logout.png" height="200px" width="200px"></a>;`);
+      } else{
+          document.write(`<a href="./login"><img src="images/login.png" height="200px" width="200px"></a>`);
+      }
+  </script>
     <a href="./cart.html"><img src="images/cart.png" height="200px" width="200px"></a>
   </nav>
 
@@ -163,7 +170,7 @@
             <br><br>
     <input type="submit" value="Add to Cart"
       style="height:40px; width:150px; margin:auto 0; text-align: center; background-color: palevioletred; font-size: 18px;  font-weight: 700;"
-      name="addProducts${i}" onclick="saveProducts(${i})">
+      name="addProducts${i}" onclick="saveProduct(${i})">
 
       <span id="cart${i}"></span>
             `)
@@ -193,7 +200,7 @@
               `)
           } else {
               document.write(`
-                  <p>Not logged in. Please<a href="login.html">login</a></p>
+                  <p>Not logged in. Please<a href="./login">login</a></p>
               `)
           };
           var cart = sessionStorage.length;

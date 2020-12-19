@@ -1,3 +1,6 @@
+<!--Author: Meghan Nagai-->
+<!--Referenced Code from Johnathan Kan -->
+
 <!--loading in the products.js file-->
 <script src="./product_data.js" type="text/javascript"></script>
 
@@ -6,7 +9,7 @@
     var cart = sessionStorage; //setting variable cart 
     var quantities = []; //setting a quantity variable 
 
-    //if cart has information 
+    //if cart is empty
     if (cart.length == 0) { 
         history.go(-1); // goes back to previous page if empty 
         alert('Shopping Cart is Empty! Please Select Products'); 
@@ -107,7 +110,14 @@
             <a href="./bracelet_display.html"><img src="images/bracelets.png" height="200px" width="200px"></a>
             <a href="./earring_display.html"><img src="images/earrings.png" height="200px" width="200px"></a>
             <a href="./ring_display.html"><img src="images/rings.png" height="200px" width="200px"></a>
-            <a href="./login"><img src="images/login.png" height="200px" width="200px"></a>
+            <script>
+                var username = getCookie('username');
+                if(username != "") {
+                    document.write(`<a href="./logout"><img src="images/logout.png" height="200px" width="200px"></a>;`);
+                } else{
+                    document.write(`<a href="./login"><img src="images/login.png" height="200px" width="200px"></a>`);
+                }
+            </script>
 
     <script> // thanks the user by name
         var theUser = getCookie('name'); 
@@ -115,11 +125,11 @@
         if (theUsername != '') { //if no name because it is not required uses the username 
             document.write(`
                 <p align="center">Hello, ${theUsername}! Please review your shopping cart order below</p>
-                <p align="center">Not ${theUsername}? Please log in <a href="login.html" >here</a></p><br />
+                <p align="center">Not ${theUsername}? Please log in <a href="./login" >here</a></p><br />
             `)
         } else { //if there is no cookie it tells to login 
             document.write(`
-                <p align="center">You are not logged in: Click <a href="login.html">here</a> to log in</p>
+                <p align="center">You are not logged in: Click <a href="./login">here</a> to log in</p>
             `)
         };
     </script>
