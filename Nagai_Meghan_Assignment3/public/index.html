@@ -1,0 +1,57 @@
+<!--Display the index.html page copied from SmartPhone Products3-->
+<!--edited and copied from Assignment 1 and 2-->
+<!--Author: Meghan Nagai-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+    function nav_bar(this_product_key, products_data) {
+        // This makes a navigation bar to other product pages
+        for (let products_key in products_data) {
+            if (products_key == this_product_key) continue;
+            document.write(`<a href='./display_products.html?products_key=${products_key}'>${products_key}<a>&nbsp&nbsp&nbsp;`);
+        }
+    }
+    </script>
+    <style>
+        /*format the background to be the starry image*/
+        body {
+        text-align: center;
+        background-image:url(images/starry.jpg);  
+        background-repeat: no-repeat; 
+        background-size: cover;
+        }
+        /*format the image*/
+        img {
+            padding: 5px;
+            /* Some padding */
+        }
+        /* Add a hover effect pink shadow box*/
+        img:hover {
+            box-shadow: 0 0 10px 1px pink;
+        }
+
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meghan's Necklace Galore</title>
+</head>
+<body>
+    <!--create a div to separate from the starry background-->
+    <div style="background-color:white; margin-left: auto; margin-right:auto; position:relative">
+        <!--format the store name heading create a box to add emphasis-->
+    <h1 style="background-color: pink;">Diamond Necklaces Galore</h1>
+    
+    <!--create the navigation bar to direct user to the different pages-->
+    <a href="./product_display.html?products_key=necklaces"><img src="images/necklaces.png" height="200px"
+        width="200px"></a>
+    <a href="./product_display.html?products_key=earrings"><img src="images/earrings.png" height="200px"
+        width="200px"></a>
+    <a href="./product_display.html?products_key=rings"><img src="images/rings.png" height="200px" width="200px"></a>
+    <a href="./product_display.html?products_key=bracelets"><img src="images/bracelets.png" height="200px" width="200px"></a>
+    
+    <h2 style="background-color: pink;">Welcome to the store!Click the on an image to start shopping!</h1>
+
+</div>
+</body>
+</html>

@@ -1,7 +1,7 @@
 //Author: Meghan Nagai
 //Followed Assignmnet 1 instructions and looked at Smart Phone Products
 //Adapted code from Assignment 1 & 2 and added more products to create more pages
-//Referenced Mark Ushiroda and Lexy Dennis code
+//Referenced Johnathan Kan and Lexy Dennis code
 
 products_array=[
         {

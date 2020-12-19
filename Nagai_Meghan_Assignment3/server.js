@@ -2,16 +2,15 @@
 //Referenced from Lab13 Ex4 and Lab14 Ex 4 Lab 15
 //Copied from Assignment 1 and 2 
 //Code was heavily adapted to use multiple pages, sessions and cookies
-//Reference: 
+//Lots of help from Professor Port
 
 var data = require('./public/products_data.js');//loads the product data
-var allProducts = data.allProducts; //set variable 'allProducts' to the products_data.js file
+var  all_products = data.allProducts; //set variable 'allProducts' to the products_data.js file
 const queryString = require('query-string'); // so it'll load querystring
 var express = require('express');//enabling the usage of the express module
 var app = express();//setting the express module as app
 var myParser = require("body-parser");//loading and enabling the body parser module
 var fs = require('fs');// references fs module to read the file path to invoice template
-var quantity_data;//create a universal variable (from Assignment2 Workshop! thank you to jojo for asking the question)
 const user_registration_info = 'user_registration_info.json';//store user_registration_info.json as a variable
 const nodemailer = require('nodemailer');//load nodemailer
 
@@ -19,16 +18,23 @@ const nodemailer = require('nodemailer');//load nodemailer
 //load cookie
 var cookieParser = require('cookie-parser'); // assigns cookieParser variable to require cookie-parser 
 app.use(cookieParser());
-
+//decode json post data
+app.use(myParser.json());
 //load session
 var session = require('express-session'); // assigns session variable to require express-session 
 app.use(session({ secret: "ITM352 rocks!" }));
+
 
 
 //writes the request message
 app.all('*', function (request, response, next) {
     console.log(request.method + ' to ' + request.path);
     next();
+});
+
+//writes the request message
+app.post('/get_products_data', function (request, response, next) {
+    response.json(JSON.stringify(all_products));
 });
 
 app.use(myParser.urlencoded({ extended: true }));
@@ -79,54 +85,39 @@ app.post("/process_form", function (request, response) {
 
 });
 
+app.post("/update_cart", function (request, response) { // posts data from the display_cart form, with action named "display_cart"
+  console.log(request.body);
+  if (!request.session.cart) {
+      request.session.cart = {};
+  }
 
+  if (!request.session.cart[request.body.product_key]) {
+    request.session.cart[request.body.product_key] = [];
+  }
 
-//computes the values needed to display the invoice
-function display_invoice(POST, response) {
-    invoice_rows = '';
-    subtotal = 0;
-    for (i in all_products) {
-        qty = quantity_data[`quantity${i}`];
-        //sets the quantity amount for each product
-        if (qty > 0) {
-            // displays the product rows of items ordered. Copied from WOD Invoice4 invoice.html
-            extended_price = qty * all_products[i].price
-            subtotal = subtotal + extended_price;
-            invoice_rows += (`
-                <tr>
-                <td style="text-align: left;">${all_products[i].brand} ${all_products[i].product_name}</td>
-                <td align="center">${qty}</td>
-                <td style="text-align: center">\$${all_products[i].price}</td>
-                <td style="text-align: right;">\$${extended_price.toFixed(2)}</td>
-              </tr>
-      `);
-        }
-    }
+  if(isNonNegInt(request.body.quantity)) {
+  request.session.cart[request.body.product_key][request.body.product_index]=request.body.quantity; 
+  request.session.save();
 
-    // Tax
-    //From WOD Invoice4 Invoice.html 
-    tax_rate = 0.0575;
-    sales_tax = tax_rate * subtotal;
-
-    // Shipping Costs
-    //From WOD Invoice4  Invoice.html
-    if (subtotal <= 50) {
-        shipping_cost = 2;
-    }
-    else if (subtotal <= 100) {
-        shipping_cost = 5;
-    }
-    else {
-        shipping_cost = 0.05 * subtotal; // 5% of subtotal
-    }
-
-    // Total Amount
-    //From WOD Invoice4  Invoice.html
-    total = subtotal + sales_tax + shipping_cost;
-    var invoice = fs.readFileSync('./views/invoice.template', 'utf8');//uses the invoice template which was adapted from invoice4
-    response.send(eval('`' + invoice + '`'));
-
+  message = {'message' : 'added to cart'};
+} else {
+    message = {'message' : 'quantity error. not added'};
 }
+console.log(request.session.cart);
+response.json(JSON.stringify(message));
+
+});
+
+app.post("/get_cart", function (request, response) { // posts data from the display_cart form, with action named "display_cart"
+
+if (!request.session.cart) {
+    request.session.cart = {};
+}
+response.json(request.session.cart);
+
+});
+
+
 //copied from Lab13 Ex4
 function isNonNegInt(q, returnErrors = false) {
     errors = []; // assume no errors at first
@@ -223,7 +214,7 @@ app.post("/process_login", function (request, response) {
 app.get("/logout", function (request, response) {
     var username = request.cookies.username;
     response.clearCookie('username');
-    response.send(`logged out ${username}`);
+    response.redirect('./logout.html?');
 });
 
 
@@ -357,6 +348,125 @@ app.post("/process_register", function (request, response) {
     }
 
 })
+
+
+
+
+
+
+//provide invoice reference Assignment 3 example
+
+app.get("/generateInvoice", function (request, response) {
+    //Check if user logged in , if not send to login
+     if(!request.cookies.username) {
+         response.redirect("./login");
+         return;
+     } 
+ 
+invoice_str += `
+<link rel="stylesheet" href="invoice-style.css" />`
+
+
+     // Generate HTML invoice string
+     user_email = request.cookies.email;
+     var invoice_str = `<h1>Thank you for your order ${request.cookies.username}! <h1><table border><th>Item</th><th>Quantity</th><th>Price</th><th>Extended Price</th>`;
+     var cart = request.session.cart;
+     subtotal = 0; //subtotal starts off as 0
+     for (pk in cart) {
+ 
+         for (i in cart[pk]) {
+
+             qty = cart[pk][i];
+             if (qty > 0) { //there has to be at least one quantity entered
+                product_price = parseInt(all_products[pk][i].price )
+                 extended_price = qty * product_price
+                 subtotal += extended_price; 
+console.log(product_price)
+console.log(qty)
+console.log(all_products[pk][i].price)
+                 invoice_str+=(`
+                 <tr>
+                     <td style= "text-align: left" width="40%">${all_products[pk][i].product_name}</td>
+                     <td width="40%">${qty}
+                     <td width="40%">\$${all_products[pk][i].price}</td>
+                     <td  width="40%">\$${extended_price}</td>
+                 </tr>
+             `);
+             }
+         }
+     }
+     //compute tax information
+     var tax_rate = 0.0575;
+     var tax = tax_rate * subtotal; 
+     // Compute shipping
+     if (subtotal <= 50) {
+         shipping = 2;
+         }
+      else if (subtotal <= 100) {
+       shipping = 5;
+     }
+      else {
+       shipping = 0.05 * subtotal; // 5% of subtotal
+       }
+     // Compute grand total
+       var grandTotal = subtotal + tax + shipping;
+     invoice_str += `<tr>
+         <td style="text-align: center;" colspan="3" width="67%">Sub-total</td>
+         <td width="75%">\$${subtotal.toFixed(2)}</td>
+       </tr>`;
+     invoice_str += `
+       <tr>
+         <td style="text-align: center;" colspan="3" width="67%"><span style="font-family: arial;">Tax @ 5.75%</span></td>
+         <td width="75%">\$${tax.toFixed(2)}</td>
+       </tr>
+       `;
+     invoice_str += `
+       <tr>
+         <td style = "text-align: center;" colspan = "3" width="67"><span style="font-family: arial;">Shipping</span></td>
+         <td width="75%">$${shipping.toFixed(2)}</td>
+       `;
+       invoice_str += `
+       <tr>
+         <td style="text-align: center;" colspan="3" width="67%"><strong>Total</strong></td>
+         <td width="75%"><strong>$${grandTotal.toFixed(2)}</strong></td>
+       </tr>
+       `;
+     invoice_str += '</table>';
+     // Set up mail server. Only will work on UH Network due to security restrictions
+     var transporter = nodemailer.createTransport({
+         host: "mail.hawaii.edu",
+         port: 25,
+         secure: false, // use TLS
+         tls: {
+             // do not fail on invalid certs
+             rejectUnauthorized: false
+         }
+     });
+ 
+     
+     var mailOptions = {
+         from: 'nagaimeg@hawaii.edu',
+         to: user_email,
+         subject: 'Your phoney invoice',
+         html: invoice_str
+     };
+ 
+     transporter.sendMail(mailOptions, function (error, info) {
+         if (error) {
+             invoice_str += `<br>There was an error and your invoice could not be emailed : to ${user_email}`;
+         } else {
+             invoice_str += `<br>Your invoice was mailed to ${user_email}`;
+         }
+         response.send(invoice_str);
+     });
+ 
+ });
+
+
+
+
+
+
 
 
 app.use(express.static('./public')); //references the public folder where the products is displayed

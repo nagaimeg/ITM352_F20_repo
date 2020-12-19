@@ -1,17 +1,9 @@
-<!--Display the index.html page copied from SmartPhone Products3-->
 <!--Author: Meghan Nagai-->
+<!--adapted from index.html used in assignment 1-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-    function nav_bar(this_product_key, products_data) {
-        // This makes a navigation bar to other product pages
-        for (let products_key in products_data) {
-            if (products_key == this_product_key) continue;
-            document.write(`<a href='./display_products.html?products_key=${products_key}'>${products_key}<a>&nbsp&nbsp&nbsp;`);
-        }
-    }
-    </script>
+
     <style>
         /*format the background to be the starry image*/
         body {
@@ -42,12 +34,14 @@
     <h1 style="background-color: pink;">Diamond Necklaces Galore</h1>
     
     <!--create the navigation bar to direct user to the different pages-->
-    <a href="./necklace_display.html"><img src="images/necklaces.png"height="20%" width="20%"></a>
-    <a href="./bracelet_display.html"><img src="images/bracelets.png"height="20%" width="20%"></a>
-    <a href="./earring_display.html"><img src="images/earrings.png"height="20%" width="20%"></a>
-    <a href="./ring_display.html"><img src="images/rings.png"height="20%" width="20%"></a>
+    <a href="./product_display.html?products_key=necklaces"><img src="images/necklaces.png" height="200px"
+        width="200px"></a>
+    <a href="./product_display.html?products_key=earrings"><img src="images/earrings.png" height="200px"
+        width="200px"></a>
+    <a href="./product_display.html?products_key=rings"><img src="images/rings.png" height="200px" width="200px"></a>
+    <a href="./product_display.html?products_key=bracelets"><img src="images/bracelets.png" height="200px" width="200px"></a>
     
-    <h2 style="background-color: pink;">Welcome to the store!Click the on an image to start shopping!</h1>
+    <h2 style="background-color: pink;">You have successfully logged out!</h1>
 
 </div>
 </body>

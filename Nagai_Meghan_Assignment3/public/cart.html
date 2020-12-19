@@ -2,11 +2,20 @@
 <!--Referenced Code from Johnathan Kan -->
 
 <!--loading in the products.js file-->
-<script src="./product_data.js" type="text/javascript"></script>
+<script src="./functions.js"></script>
+<script src="./products_data.js" type="text/javascript"></script>
 
 <script>
 
-    var cart = sessionStorage; //setting variable cart 
+    var cart;
+
+    loadJSON('get_cart', function (response) {
+      // Parsing JSON string into object
+      cart = JSON.parse(response);
+      console.log(typeof JSON.parse(response));
+
+  });
+  console.log(cart);
     var quantities = []; //setting a quantity variable 
 
     //if cart is empty
@@ -31,9 +40,24 @@
         }
         return "";
     };
+
+    //made with help from stackoverflow.com 
+    function GoBackWithRefresh(event) { //takes you back to previous page
+        var past = document.referrer;
+        var pastPage = past.split('/').pop(); 
+
+        if (pastPage != './login' && pastPage != 'register.html' && pastPage != 'cart.html') { 
+            window.location = past;
+        } else if (pastPage == './login' && pastPage == 'register.html' && pastPage == 'cart.html') {
+            window.history.go(-2); //go back 2 pages instead of to that last page if it was login, cart or register
+        } else {
+            window.location.href = './index2.html'; //takes you to home page
+        }
+    };
+
     //function to change product amount by positive 1 in cart 
     function addItem(theProduct, theIndex) { 
-        var thisRowQty = parseInt(sessionStorage.getItem(`${theProduct}${theIndex}`)); 
+        var thisRowQty = parseInt(sessionStorage.getItem(`${pk}${i}`)); 
         thisRowQty += 1; //adds 1
         sessionStorage.setItem(`${theProduct}${theIndex}`, thisRowQty); //gives the new value to the session 
         window.location.reload(); //reloads the page 
@@ -49,30 +73,19 @@
 
     };
 
-    //made with help from stackoverflow.com 
-    function GoBackWithRefresh(event) { //takes you back to previous page
-        var past = document.referrer;
-        var pastPage = past.split('/').pop(); 
-
-        if (pastPage != 'login.html' && pastPage != 'register.html' && pastPage != 'cart.html') { 
-            window.location = past;
-        } else if (pastPage == 'login.html' && pastPage == 'register.html' && pastPage == 'cart.html') {
-            window.history.go(-2); //go back 2 pages instead of to that last page if it was login, cart or register
-        } else {
-            window.location.href = './index2.html'; //takes you to home page
-        }
-    };
 //insures that teh cart has proper data and that the user is logged in 
     function checkCart() {
         if (cart.length == 0) {
-            window.location.reload();
+            console.log(cart)
+            alert(`Please select items before purchasing`);
+            window.location.href = '/index.html'
         } else if (theUsername == '') {
             alert(`Please log in before viewing cart`);
-            window.location.href = './login.html';
+            window.location.href = './login';
         } else {
             fetch("/generateInvoice?cartData="+JSON.stringify(cart)+"&cookieData="+JSON.stringify(document.cookie), 
             {
-                method: "POST"
+                method: "GET"
             }).then(function (res) {
                 return res.text();
             }).then(function (data) {
@@ -106,10 +119,12 @@
         <link rel="stylesheet" href="invoice-style.css">
 
             <a href="./index.html"><img src="images/home.png" height="200px" width="200px"></a>
-            <a href="./necklace_display.html"><img src="images/necklaces.png" height="200px" width="200px"></a>            
-            <a href="./bracelet_display.html"><img src="images/bracelets.png" height="200px" width="200px"></a>
-            <a href="./earring_display.html"><img src="images/earrings.png" height="200px" width="200px"></a>
-            <a href="./ring_display.html"><img src="images/rings.png" height="200px" width="200px"></a>
+            <a href="./product_display.html?products_key=necklaces"><img src="images/necklaces.png" height="200px"
+                width="200px"></a>
+            <a href="./product_display.html?products_key=earrings"><img src="images/earrings.png" height="200px"
+                width="200px"></a>
+            <a href="./product_display.html?products_key=rings"><img src="images/rings.png" height="200px" width="200px"></a>
+            <a href="./product_display.html?products_key=bracelets"><img src="images/bracelets.png" height="200px" width="200px"></a>
             <script>
                 var username = getCookie('username');
                 if(username != "") {
@@ -150,29 +165,28 @@
             <script> //The script will take the info entered and put it in table 
 
                 subtotal = 0; //subtotal starts off as 0
-                for (product in allProducts) {
-                    for (i = 0; i < allProducts[product].length; i++) {
+                for (pk in cart) {
+            
+                    for (i in cart[pk]) {
 
-                        qty = cart.getItem(`${product}${i}`);
+                        qty = cart[pk][i];
                         if (qty > 0) { //there has to be at least one quantity entered
-                            extended_price = qty * allProducts[product][i].price 
+                            extended_price = qty * allProducts[pk][i].price 
                             subtotal += extended_price; 
 
                             document.write(`
                             <tr>
-                                <td style= "text-align: left" width="40%">${allProducts[product][i].name}</td>
+                                <td style= "text-align: left" width="40%">${allProducts[pk][i].product_name}</td>
                                 <td width="20%">${qty}
-                                    <input type="button" class="button alt" value="+1" onclick="addItem('${product}',${i});">
-                                    <input type="button" class="button alt" value="-1" onclick="removeItem('${product}',${i});"></td>
-                                <td width="20%">\$${allProducts[product][i].price}</td>
+                                <td width="20%">\$${allProducts[pk][i].price}</td>
                                 <td  width="20%">\$${extended_price}</td>
                             </tr>
                         `);
                         }
-                    };
+                    }
                 }
                 //compute tax information
-                var tax_rate = 0.0471;
+                var tax_rate = 0.0575;
                 var tax = tax_rate * subtotal; 
                 // Compute shipping
                 if (subtotal <= 50) {
@@ -193,9 +207,6 @@
                     Creates row of space with "clear all" button
                     Code for clear all made with help from smashmagazine.com 
                 -->
-                <td align="center" colspan="4" width="100%"><input type="button" class="button special" value="Clear All"
-                        onclick="cart.clear(); window.location.reload();">
-                </td>
 
             </tr>
 

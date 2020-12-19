@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!--Author Meghan Nagai-->
 <!--Adapted from Lab 14 Ex4.js-->
+<!--reused code from Assignment 2; edited to fit assignment 3 with nav bar-->
 <html lang="en">
 
 <head>
@@ -21,10 +22,12 @@
 <!--navigation bar-->
 <nav>
 <a href="./index.html"><img src="images/home.png"height="200px" width="200px"></a>
-  <a href="./necklace_display.html"><img src="images/necklaces.png"height="200px" width="200px"></a>
-  <a href="./bracelet_display.html"><img src="images/bracelets.png"height="200px" width="200px"></a>
-  <a href="./earring_display.html"><img src="images/earrings.png"height="200px" width="200px"></a>
-  <a href="./ring_display.html"><img src="images/rings.png"height="200px" width="200px"></a>
+    <a href="./product_display.html?products_key=necklaces"><img src="images/necklaces.png" height="200px"
+        width="200px"></a>
+    <a href="./product_display.html?products_key=earrings"><img src="images/earrings.png" height="200px"
+        width="200px"></a>
+    <a href="./product_display.html?products_key=rings"><img src="images/rings.png" height="200px" width="200px"></a>
+    <a href="./product_display.html?products_key=bracelets"><img src="images/bracelets.png" height="200px" width="200px"></a>
   <a href="./cart.html"><img src="images/cart.png"height="200px" width="200px"></a>
 </nav>
 
